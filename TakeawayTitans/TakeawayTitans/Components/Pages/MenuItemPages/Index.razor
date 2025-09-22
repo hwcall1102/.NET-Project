@@ -1,0 +1,62 @@
+﻿@page "/menuitems"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using RestaurantApi.Models
+@using TakeawayTitans.Data
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="menuitems/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.MenuItem" Pagination="state">
+    <PropertyColumn Property="menuitem => menuitem.Name" Sortable="true" >
+        <ColumnOptions>
+            <div>
+                <input type="search" @bind="filterName" @bind:event="oninput" autofocus placeholder="Filter by name..." />
+            </div>
+        </ColumnOptions>
+    </PropertyColumn>
+    <PropertyColumn Property="menuitem => menuitem.Price" Sortable="true" />
+    <PropertyColumn Property="menuitem => menuitem.Description" />
+    <PropertyColumn Property="menuitem => menuitem.ImageUrl" />
+
+    <TemplateColumn Context="menuitem">
+        <a href="@($"menuitems/edit?id={menuitem.Id}")">Edit</a> |
+        <a href="@($"menuitems/details?id={menuitem.Id}")">Details</a> |
+        <a href="@($"menuitems/delete?id={menuitem.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private TakeawayTitansContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
+
+<Paginator State="state" />
+
+@code {
+    PaginationState state= new PaginationState { ItemsPerPage = 6 };
+    string filterName = string.Empty;
+
+    IQueryable<MenuItem> ApplyFilter(IQueryable<MenuItem> items)
+    {
+        if (!string.IsNullOrWhiteSpace(filterName))
+        {
+            items = items.Where(item => item.Name.Contains(filterName));
+        }
+        return items;
+    }
+}

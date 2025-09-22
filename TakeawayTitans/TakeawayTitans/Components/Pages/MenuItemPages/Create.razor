@@ -1,0 +1,59 @@
+﻿@page "/menuitems/create"
+@using Microsoft.EntityFrameworkCore
+@using RestaurantApi.Models
+@inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>MenuItem</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="MenuItem" OnValidSubmit="AddMenuItem" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label> 
+                <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.Price" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="imageurl" class="form-label">ImageUrl:</label> 
+                <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/menuitems">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private MenuItem MenuItem { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddMenuItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.MenuItem.Add(MenuItem);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/menuitems");
+    }
+}
