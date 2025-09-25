@@ -1,0 +1,24 @@
+@page "/"
+@layout Layout.EmptyLayout
+
+<PageTitle>Takeaway Titans</PageTitle>
+<div class="page">
+    <div class="hero-container">
+        <img src="landing-image.webp" alt="wooden board with vegetable and bread" class="hero-image"/>
+        <div class="hero-title-container">
+            <p class="hero-title">Takeaway Titans</p>
+            <p class="hero-subtitle">Pick-Up Right Away</p>
+        </div>
+    </div>
+    <div class="btn-container">
+        <button class="btn btn-menu">VIEW MENU</button>
+        <button class="btn btn-order">ORDER ONLINE</button>
+        <button class="btn btn-track">TRACK ORDER</button>
+    </div>
+    <div class="landing-footer">&copy; @currentYear Takeaway Titans @team</div>
+</div>
+
+@code {
+    private string currentYear = DateTime.Now.Year.ToString();
+    private string team = "CSE325-Block5-Team16";
+}
