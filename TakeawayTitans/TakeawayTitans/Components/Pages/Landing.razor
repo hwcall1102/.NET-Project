@@ -1,6 +1,8 @@
 @page "/"
 @layout Layout.EmptyLayout
 @using TakeawayTitans.Components.Layout
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
 
 <PageTitle>Takeaway Titans</PageTitle>
 <div class="page">
@@ -12,9 +14,15 @@
         </div>
     </div>
     <div class="btn-container">
-        <button class="btn btn-menu">VIEW MENU</button>
-        <button class="btn btn-order">ORDER ONLINE</button>
-        <button class="btn btn-track">TRACK ORDER</button>
+        <button type="button" class="btn btn-menu" @onclick="GoToMenu">VIEW MENU</button>
+        <button type="button" class="btn btn-order" @onclick="GoToOrder">ORDER ONLINE</button>
+        <button type="button" class="btn btn-track" @onclick="GoToTrack">TRACK ORDER</button>
     </div>
     <Footer />
 </div>
+
+@code {
+    private void GoToMenu() => Navigation.NavigateTo("/menu");
+    private void GoToOrder() => Navigation.NavigateTo("/order");
+    private void GoToTrack() => Navigation.NavigateTo("/track");
+}
