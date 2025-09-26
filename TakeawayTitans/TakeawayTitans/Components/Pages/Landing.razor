@@ -1,5 +1,6 @@
 @page "/"
 @layout Layout.EmptyLayout
+@using TakeawayTitans.Components.Layout
 
 <PageTitle>Takeaway Titans</PageTitle>
 <div class="page">
@@ -15,10 +16,5 @@
         <button class="btn btn-order">ORDER ONLINE</button>
         <button class="btn btn-track">TRACK ORDER</button>
     </div>
-    <div class="landing-footer">&copy; @currentYear Takeaway Titans @team</div>
+    <Footer />
 </div>
-
-@code {
-    private string currentYear = DateTime.Now.Year.ToString();
-    private string team = "CSE325-Block5-Team16";
-}
