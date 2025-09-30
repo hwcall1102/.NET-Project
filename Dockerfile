@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy the csproj and restore
-COPY TakeawayTitans/TakeawayTitans/TakeawayTitans.csproj ./TakeawayTitans/
+COPY TakeawayTitans/src/TakeawayTitans.csproj ./TakeawayTitans/
 WORKDIR /src/TakeawayTitans
 RUN dotnet restore
 
 # Copy the rest of the project and publish
-COPY TakeawayTitans/TakeawayTitans/. ./TakeawayTitans/
+COPY TakeawayTitans/src/. ./TakeawayTitans/
 RUN dotnet publish -c Release -o /app/publish
 
 # Stage 2: Runtime
