@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy project file & restore
-COPY src/TakeawayTitans/TakeawayTitans.csproj ./TakeawayTitans/
+COPY TakeawayTitans/TakeawayTitans.csproj ./TakeawayTitans/
 WORKDIR /TakeawayTitans
 RUN dotnet restore
 
