@@ -14,10 +14,8 @@ public class User
     [MinLength(6)]
     public string Password { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
-    [Required]
-    public string FirstName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = "Unknown";
     public string? LastName { get; set; }
-    [Required]
     public UserRole Role { get; set; } = UserRole.User;
     public string? ImageUrl { get; set; }
     [Required, DataType(DataType.Date)]
