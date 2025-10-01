@@ -1,6 +1,6 @@
 ﻿@page "/menuitems/create"
 @using Microsoft.EntityFrameworkCore
-@using RestaurantApi.Models
+@using TakeawayTitans.Data.Models
 @using TakeawayTitans.Data
 @inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -53,7 +53,7 @@
     private async Task AddMenuItem()
     {
         using var context = DbFactory.CreateDbContext();
-        context.MenuItem.Add(MenuItem);
+        context.MenuItems.Add(MenuItem);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/menuitems");
     }

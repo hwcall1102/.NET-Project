@@ -1,7 +1,7 @@
 ﻿@page "/menuitems"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using RestaurantApi.Models
+@using TakeawayTitans.Data.Models
 @using TakeawayTitans.Data
 @rendermode InteractiveServer
 @implements IAsyncDisposable
@@ -15,7 +15,7 @@
     <a href="menuitems/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.MenuItem" Pagination="state">
+<QuickGrid Class="table" Items="context.MenuItems" Pagination="state">
     <PropertyColumn Property="menuitem => menuitem.Name" Sortable="true" >
         <ColumnOptions>
             <div>
@@ -48,7 +48,7 @@
 <Paginator State="state" />
 
 @code {
-    PaginationState state= new PaginationState { ItemsPerPage = 6 };
+    PaginationState state = new PaginationState { ItemsPerPage = 6 };
     string filterName = string.Empty;
 
     IQueryable<MenuItem> ApplyFilter(IQueryable<MenuItem> items)

@@ -1,6 +1,6 @@
 ﻿@page "/menuitems/edit"
 @using Microsoft.EntityFrameworkCore
-@using RestaurantApi.Models
+@using TakeawayTitans.Data.Models
 @using TakeawayTitans.Data
 @inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -13,40 +13,40 @@
 <hr />
 @if (MenuItem is null)
 {
-    <p><em>Loading...</em></p>
+            <p><em>Loading...</em></p>
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name:</label>
-                    <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" />
-                    <ValidationMessage For="() => MenuItem.Name" class="text-danger" />
+            <div class="row">
+                <div class="col-md-4">
+                    <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary role="alert"/>
+                        <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Name" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price:</label>
+                            <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Price" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Description" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageurl" class="form-label">ImageUrl:</label>
+                            <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </EditForm>
                 </div>
-                <div class="mb-3">
-                    <label for="price" class="form-label">Price:</label>
-                    <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" />
-                    <ValidationMessage For="() => MenuItem.Price" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description:</label>
-                    <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" />
-                    <ValidationMessage For="() => MenuItem.Description" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="imageurl" class="form-label">ImageUrl:</label>
-                    <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" />
-                    <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
-        </div>
-    </div>
+            </div>
 }
 
 <div>
@@ -63,7 +63,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        MenuItem ??= await context.MenuItem.FirstOrDefaultAsync(m => m.Id == Id);
+        MenuItem ??= await context.MenuItems.FirstOrDefaultAsync(m => m.Id == Id);
 
         if (MenuItem is null)
         {
@@ -100,6 +100,6 @@ else
     private bool MenuItemExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
-        return context.MenuItem.Any(e => e.Id == id);
+        return context.MenuItems.Any(e => e.Id == id);
     }
 }
