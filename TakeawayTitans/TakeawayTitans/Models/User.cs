@@ -8,7 +8,7 @@ public class User
 {
     [Key]
     public Guid Id { get; set; } = Guid.NewGuid();
-    [Required, EmailAddress]
+    [Required(ErrorMessage ="Email address required"), EmailAddress(ErrorMessage ="Invalid Email format")]
     public string Email { get; set; } = string.Empty;
     [NotMapped]
     [MinLength(6)]

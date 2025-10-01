@@ -27,6 +27,7 @@ builder.Services.AddDbContextFactory<TakeawayTitansContext>(configureDbContext);
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddBlazorBootstrap();
 
 
 // Add services to the container.

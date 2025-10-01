@@ -1,51 +1,48 @@
 ﻿@page "/admin-login"
+@rendermode InteractiveServer
 @using System.Data.Common
 @using Microsoft.EntityFrameworkCore
 @using System.Drawing
 @using TakeawayTitans.Data
 @using TakeawayTitans.Models
+
 @inject IDbContextFactory<TakeawayTitansContext> DbFactory
 
 <PageTitle>Admin Login</PageTitle>
 <div class="page">
-    <EditForm method="post" Model="LoginUser" class="form-container">
-        <div class="form-item">
-            <label>Email</label>
-            <InputText @bind-Value="LoginUser.Email" type="email"></InputText>
-        </div>
-        <div class="form-item">
-            <label>Password</label>
-            <div class="form-item">
-                <InputText @bind-Value="LoginUser.Password" type="@PasswordInputType"></InputText>
-                <button type="button" class="toggle-password" @onclick="TogglePasswordVisibility">
-                    @if (showPassword)
-                    {
-                        <iconify-icon icon="gridicons:visible" aria-label="visible" class="icon-view"></iconify-icon>
-                    }
-                    else
-                    {
-                        <iconify-icon icon="streamline:invisible-2-remix" aria-label="invisible" class="icon-view"></iconify-icon>
-                    }
-                </button>
+    <EditForm Model="LoginUser" method="post" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label>Email: <span class="text-danger">*</span></label>
+            <div>
+                <TextInput @bind-value="@LoginUser.Email" Placeholder="Enter email address" class="fs-4"/>
+                <ValidationMessage For="() => LoginUser.Email" />
             </div>
+        </div>
+        <div class="form-group">
+            <label>Password: <span class="text-danger">*</span></label>
+            <div>
+                <PasswordInput @bind-value="@LoginUser.Password" Placeholder="Enter password" class="fs-4"/>
+                <ValidationMessage For="() => LoginUser.Password" />
+            </div>
+        </div>
+        <div class="row">
+            <Button Type="ButtonType.Reset" @onclick="ResetForm" class="button btn-reset fs-4">Reset</Button>
+            <Button Type="ButtonType.Submit" class="button btn-login fs-4">Login</Button>
         </div>
     </EditForm>
 </div>
 
 @code {
-    public User LoginUser { get; set; } = new();
-    private bool showPassword = false;
-    private string PasswordInputType => showPassword ? "text" : "password";
+   private User LoginUser = new ();
+   private bool showPassword = false;
+   private void HandleLogin()
+   {
+    // do something
+   }
+   private void ResetForm()
+   {
 
-    private async Task VerifyUser(User loginUser)
-    {
-        using var context = DbFactory.CreateDbContext();
-        var correctUser = await context.Users.FindAsync(loginUser.Email);
-        
-    }
+   }
 
-    private void TogglePasswordVisibility()
-    {
-        showPassword = !showPassword;
-    }
 }
