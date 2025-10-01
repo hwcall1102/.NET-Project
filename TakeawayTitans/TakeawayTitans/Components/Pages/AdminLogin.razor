@@ -1,18 +1,51 @@
 ﻿@page "/admin-login"
+@using System.Data.Common
+@using Microsoft.EntityFrameworkCore
+@using System.Drawing
+@using TakeawayTitans.Data
+@using TakeawayTitans.Models
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+
 <PageTitle>Admin Login</PageTitle>
 <div class="page">
-    <EditForm class="form-container">
+    <EditForm method="post" Model="LoginUser" class="form-container">
         <div class="form-item">
-            <label>Username</label>
-            <InputText></InputText>
+            <label>Email</label>
+            <InputText @bind-Value="LoginUser.Email" type="email"></InputText>
         </div>
-        <div>
+        <div class="form-item">
             <label>Password</label>
-            <InputText></InputText>
+            <div class="form-item">
+                <InputText @bind-Value="LoginUser.Password" type="@PasswordInputType"></InputText>
+                <button type="button" class="toggle-password" @onclick="TogglePasswordVisibility">
+                    @if (showPassword)
+                    {
+                        <iconify-icon icon="gridicons:visible" aria-label="visible" class="icon-view"></iconify-icon>
+                    }
+                    else
+                    {
+                        <iconify-icon icon="streamline:invisible-2-remix" aria-label="invisible" class="icon-view"></iconify-icon>
+                    }
+                </button>
+            </div>
         </div>
     </EditForm>
 </div>
 
 @code {
+    public User LoginUser { get; set; } = new();
+    private bool showPassword = false;
+    private string PasswordInputType => showPassword ? "text" : "password";
 
+    private async Task VerifyUser(User loginUser)
+    {
+        using var context = DbFactory.CreateDbContext();
+        var correctUser = await context.Users.FindAsync(loginUser.Email);
+        
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
 }
