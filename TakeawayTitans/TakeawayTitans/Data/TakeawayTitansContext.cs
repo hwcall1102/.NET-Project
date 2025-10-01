@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TakeawayTitans.Models;
 using RestaurantApi.Models;
 
-namespace TakeawayTitans.Data
-{
-    public class TakeawayTitansContext : DbContext
-    {
-        public TakeawayTitansContext (DbContextOptions<TakeawayTitansContext> options)
-            : base(options)
-        {
-        }
+namespace TakeawayTitans.Data;
 
-        public DbSet<RestaurantApi.Models.MenuItem> MenuItem { get; set; } = default!;
+public class TakeawayTitansContext : DbContext
+{
+    public TakeawayTitansContext(DbContextOptions<TakeawayTitansContext> options)
+        : base(options)
+    {
     }
+
+    public DbSet<MenuItem> MenuItem { get; set; } = default!;
+    public DbSet<User> Users { get; set; } = default!;
 }

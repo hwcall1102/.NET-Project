@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TakeawayTitans.Data;
 
@@ -10,9 +11,11 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    partial class TakeawayTitansContextModelSnapshot : ModelSnapshot
+    [Migration("20250930212842_InitCreate")]
+    partial class InitCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");

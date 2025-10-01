@@ -1,5 +1,4 @@
 ﻿@page "/useritems/edit"
-@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using TakeawayTitans.Models
 @inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
@@ -19,18 +18,18 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <p>ID: @EditUser.Id</p>
-            <p>Email: @EditUser.Email</p>
-            <p>CreatedAt: @EditUser.CreatedAt</p>
-            <p>Password: @EditUser.Password</p>
-            <p>PasswordHash: @EditUser.PasswordHash</p>
+            <dl class="row mb-3">
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@EditUser.Email</dd>
+                
+                <dt class="col-sm-3">Created:</dt>
+                <dd class="col-sm-9">@EditUser.CreatedAt.ToShortDateString()</dd>
+            </dl>
             <EditForm method="post" Model="EditUser" OnValidSubmit="UpdateUser" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="User.Id" value="@EditUser.Id" />
-                <input type="hidden" name="User.Email" value="@EditUser.Email" />
-                <input type="hidden" name="User.CreatedAt" value="@EditUser.CreatedAt" />
-                
+                <ValidationSummary role="alert" class="text-danger"/>
+                <input type="hidden" name="EditUser.Email" value="@EditUser!.Email" />
+                <input type="hidden" name="EditUser.Id" value="@EditUser.Id" />
                 <div class="mb-3">
                     <label for="password" class="form-label">Password:</label>
                     <InputText id="password" @bind-Value="EditUser.Password" type="password" class="form-control" />
@@ -49,7 +48,7 @@ else
                 <div class="mb-3">
                     <label for="role" class="form-label">Role:</label>
                     <InputSelect id="role" @bind-Value="EditUser.Role" class="form-select">
-                        @foreach (var role in Roles)
+                        @foreach (var role in Enum.GetValues<UserRole>())
                         {
                             <option value="@role">@role</option>
                         }
@@ -76,7 +75,7 @@ else
     private Guid Id { get; set; }
 
     [SupplyParameterFromForm]
-    private User? EditUser { get; set; }
+    public User? EditUser { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,21 +92,28 @@ else
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateUser()
     {
-        using var context = DbFactory.CreateDbContext();
 
         if (EditUser is null)
         {
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(EditUser.Password))
+        using var context = DbFactory.CreateDbContext();
+        var originalUser = await context.Users.FindAsync(EditUser.Id);
+        if (originalUser is null)
         {
-            var passwordHasher = new PasswordHasher<User>();
-            EditUser.PasswordHash = passwordHasher.HashPassword(EditUser, EditUser.Password);
+            NavigationManager.NavigateTo("notfound");
+            return;
         }
 
-        EditUser.Password = string.Empty;
-        context.Attach(EditUser).State = EntityState.Modified;
+        originalUser.FirstName = EditUser.FirstName;
+        originalUser.LastName = EditUser.LastName;
+        originalUser.Role = EditUser.Role;
+        originalUser.ImageUrl = EditUser.ImageUrl;
+        if (!string.IsNullOrWhiteSpace(EditUser.Password))
+        {
+            originalUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(EditUser.Password);
+        }
 
         try
         {

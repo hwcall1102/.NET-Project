@@ -1,0 +1,9 @@
+.page {
+    padding: 20px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    width: min(350, 100%);
+}

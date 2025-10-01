@@ -1,5 +1,4 @@
 ﻿@page "/useritems/create"
-@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using TakeawayTitans.Models
 @inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
@@ -13,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="NewUser" OnValidSubmit="AddUserItem" FormName="create" Enhance>
+        <EditForm method="post" Model="NewUser" OnValidSubmit="AddUser" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
@@ -58,7 +57,7 @@
 </div>
 
 <div>
-    <a href="/menuitems">Back to List</a>
+    <a href="/useritems">Back to List</a>
 </div>
 
 @code {
@@ -67,12 +66,18 @@
 
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task AddUserItem()
+    private async Task AddUser()
     {
+        if (string.IsNullOrEmpty(NewUser.Password))
+        {
+            return;
+        }
+        NewUser.Email = NewUser.Email.Trim().ToLowerInvariant();
+        NewUser.FirstName = NewUser.FirstName.Trim();
+
+        NewUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NewUser.Password);
+        NewUser.CreatedAt = DateTime.Now;
         using var context = DbFactory.CreateDbContext();
-        var passwordHasher = new PasswordHasher<User>();
-        NewUser.PasswordHash = passwordHasher.HashPassword(NewUser, NewUser.Password);
-        NewUser.CreatedAt = DateTime.UtcNow;
         context.Users.Add(NewUser);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/useritems");

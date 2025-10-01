@@ -4,12 +4,30 @@ using Microsoft.Extensions.DependencyInjection;
 using TakeawayTitans.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TakeawayTitansContext") ?? throw new InvalidOperationException("Connection string 'TakeawayTitansContext' not found.")));
+var useSqlite = builder.Configuration.GetValue<bool>("UseSqlite");
+
+Action<DbContextOptionsBuilder> configureDbContext = options =>
+{
+    if (useSqlite)
+    {
+        var sqliteConnection = builder.Configuration.GetConnectionString("Sqlite") ?? "Data Source=app.db";
+        options.UseSqlite(sqliteConnection);
+    }
+    else
+    {
+        var sqlServerConnection = builder.Configuration.GetConnectionString("TakeawayTitansContext")
+            ?? throw new InvalidOperationException("Connection string 'TakeawayTitansContext' not found");
+        options.UseSqlServer(sqlServerConnection);
+    }
+};
+
+// builder.Services.AddDbContext<TakeawayTitansContext>(configureDbContext);
+builder.Services.AddDbContextFactory<TakeawayTitansContext>(configureDbContext);
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
