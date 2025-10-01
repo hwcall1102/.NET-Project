@@ -11,8 +11,8 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    [Migration("20250930212842_InitCreate")]
-    partial class InitCreate
+    [Migration("20251001010547_SeedAdminUser")]
+    partial class SeedAdminUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,19 @@ namespace TakeawayTitans.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1d552dd2-5ace-4314-ba51-2795d2d2584a"),
+                            CreatedAt = new DateTime(2025, 10, 1, 1, 5, 47, 369, DateTimeKind.Utc).AddTicks(1640),
+                            Email = "test@gmail.com",
+                            FirstName = "Test",
+                            ImageUrl = "https://picsum.photos/id/64/200",
+                            LastName = "User",
+                            PasswordHash = "$2a$11$pOUbOI0hMwLbfPj9m31Kw.VoTLcW0BaizL0yoMdztlr.1nyUVb3we",
+                            Role = 1
+                        });
                 });
 #pragma warning restore 612, 618
         }

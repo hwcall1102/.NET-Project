@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TakeawayTitans.Data;
 
@@ -10,9 +11,11 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    partial class TakeawayTitansContextModelSnapshot : ModelSnapshot
+    [Migration("20251001004545_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -76,19 +79,6 @@ namespace TakeawayTitans.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("1d552dd2-5ace-4314-ba51-2795d2d2584a"),
-                            CreatedAt = new DateTime(2025, 10, 1, 1, 5, 47, 369, DateTimeKind.Utc).AddTicks(1640),
-                            Email = "test@gmail.com",
-                            FirstName = "Test",
-                            ImageUrl = "https://picsum.photos/id/64/200",
-                            LastName = "User",
-                            PasswordHash = "$2a$11$pOUbOI0hMwLbfPj9m31Kw.VoTLcW0BaizL0yoMdztlr.1nyUVb3we",
-                            Role = 1
-                        });
                 });
 #pragma warning restore 612, 618
         }
