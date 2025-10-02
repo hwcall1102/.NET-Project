@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TakeawayTitans.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var useSqlite = builder.Configuration.GetValue<bool>("UseSqlite");
@@ -21,7 +23,6 @@ Action<DbContextOptionsBuilder> configureDbContext = options =>
     }
 };
 
-// builder.Services.AddDbContext<TakeawayTitansContext>(configureDbContext);
 builder.Services.AddDbContextFactory<TakeawayTitansContext>(configureDbContext);
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
@@ -33,6 +34,17 @@ builder.Services.AddBlazorBootstrap();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "auth_token";
+        options.LoginPath = "/admin-login";
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+        options.AccessDeniedPath = "/access-denied";
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 
@@ -49,6 +61,8 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
