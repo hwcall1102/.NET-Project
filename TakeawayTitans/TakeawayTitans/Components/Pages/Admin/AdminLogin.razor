@@ -1,11 +1,16 @@
 ﻿@page "/admin-login"
 @rendermode InteractiveServer
 @using System.Data.Common
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
 @using TakeawayTitans.Data
 @using TakeawayTitans.Models
-@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+@using System.Net.Http.Json
+
 @inject NavigationManager Navigation
+@inject HttpClient Http
 
 <PageTitle>Admin Login</PageTitle>
 <div class="page">
@@ -38,29 +43,34 @@
 
 
 @code {
-    private User LoginUser = new ();
+    private LoginModel LoginUser = new ();
     private string errorMessage = string.Empty;
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthTask {get; set;} = default!;
+    private ClaimsPrincipal? user;
+    protected override async Task OnInitializedAsync()
+    {
+        user = (await AuthTask).User;
+    }
+
     private async Task HandleLogin()
     {
         try 
         {
             errorMessage = string.Empty;
-            using var context = await DbFactory.CreateDbContextAsync();
-            var correctUser = await context.Users.FirstOrDefaultAsync(user => user.Email == LoginUser.Email);
+            var dto = new LoginRequest(LoginUser.Email, LoginUser.Password, true);
+            var response = await Http.PostAsJsonAsync(Navigation.ToAbsoluteUri("/api/auth/admin-login"), dto);
+            Console.WriteLine(response);
 
-            var isPasswordValid = BCrypt.Net.BCrypt.Verify(LoginUser.Password, correctUser.PasswordHash);
-            if (correctUser is null || !isPasswordValid)
+            if (response.IsSuccessStatusCode)
             {
-                errorMessage = "Invalid user or password";
-                return;
+                Navigation.NavigateTo("/admin-dashboard", true);
             }
-
-            if (correctUser.Role != UserRole.Admin)
+            else
             {
-                errorMessage = "Access denied";
-                return;
+                errorMessage = await response.Content.ReadAsStringAsync();
+                
             }
-            Navigation.NavigateTo("/admin-dashboard");
         }
         catch (DbException ex)
         {
@@ -69,7 +79,7 @@
         }
         catch (Exception ex)
         {
-            errorMessage = "Something wrong! Please try again later";
+            errorMessage = ex.Message;
             Console.WriteLine(ex.Message);
         }
     }

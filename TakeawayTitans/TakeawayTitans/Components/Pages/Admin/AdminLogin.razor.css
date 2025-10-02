@@ -5,7 +5,7 @@
    font-size: 20px;
    justify-content: center;
    align-items: center;
-   min-height: calc(100vh - 100px - 56px)
+   min-height: var(--body-height);
 }
 .page ::deep form {
     width: var(--max-content-width);
