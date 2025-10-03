@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data.Models;
+using TakeawayTitans.Models;
 
 namespace TakeawayTitans.Data
 {
@@ -39,13 +40,26 @@ namespace TakeawayTitans.Data
 
             // Seed 5 users
             // Seed 5 users with fake names
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, FName = "Alice", LName = "Johnson", Username = "admin1", Password = "password", Type = "admin" },
-                new User { Id = 2, FName = "Bob", LName = "Smith", Username = "admin2", Password = "password", Type = "admin" },
-                new User { Id = 3, FName = "Carol", LName = "Davis", Username = "admin3", Password = "password", Type = "admin" },
-                new User { Id = 4, FName = "David", LName = "Martinez", Username = "admin4", Password = "password", Type = "admin" },
-                new User { Id = 5, FName = "Emma", LName = "Wilson", Username = "admin5", Password = "password", Type = "admin" }
-            );
+            // modelBuilder.Entity<User>().HasData(
+            //     new User { Id = 1, FName = "Alice", LName = "Johnson", Username = "admin1", Password = "password", Type = "admin" },
+            //     new User { Id = 2, FName = "Bob", LName = "Smith", Username = "admin2", Password = "password", Type = "admin" },
+            //     new User { Id = 3, FName = "Carol", LName = "Davis", Username = "admin3", Password = "password", Type = "admin" },
+            //     new User { Id = 4, FName = "David", LName = "Martinez", Username = "admin4", Password = "password", Type = "admin" },
+            //     new User { Id = 5, FName = "Emma", LName = "Wilson", Username = "admin5", Password = "password", Type = "admin" }
+            // );
+            var hashedPW = BCrypt.Net.BCrypt.HashPassword("123456");
+            var admin = new User()
+            {
+                Id = 1,
+                Email = "test@gmail.com",
+                PasswordHash = hashedPW,
+                FirstName = "Test",
+                LastName = "User",
+                Role = UserRole.Admin,
+                ImageUrl = "https://picsum.photos/id/64/200",
+                CreatedAt = DateTime.UtcNow,
+            };
+            modelBuilder.Entity<User>().HasData(admin);
 
 
             // Orders and OrderItems are intentionally left empty

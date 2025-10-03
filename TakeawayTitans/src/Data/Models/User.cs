@@ -1,28 +1,29 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
-namespace TakeawayTitans.Data.Models
+namespace TakeawayTitans.Models;
+
+public class User
 {
-    public class User
-    {
-        public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
+    [Required(ErrorMessage ="Email address required"), EmailAddress(ErrorMessage ="Invalid Email format")]
+    public string Email { get; set; } = string.Empty;
+    [NotMapped]
+    [MinLength(6)]
+    public string Password { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public string FirstName { get; set; } = "Unknown";
+    public string? LastName { get; set; }
+    public UserRole Role { get; set; } = UserRole.User;
+    public string? ImageUrl { get; set; }
+    [Required, DataType(DataType.Date)]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+}
 
-        [Required]
-        [MaxLength(50)]
-        public string FName { get; set; } = default!;
-
-        [Required]
-        [MaxLength(50)]
-        public string LName { get; set; } = default!;
-
-        [Required]
-        [MaxLength(50)]
-        public string Username { get; set; } = default!;
-
-        [Required]
-        public string Password { get; set; } = default!;
-
-        [Required]
-        [MaxLength(20)]
-        public string Type { get; set; } = "admin"; // all users are admin for now
-    }
+public enum UserRole
+{
+    User,
+    Admin
 }

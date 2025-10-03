@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -51,11 +52,13 @@ namespace TakeawayTitans.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    LName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -109,15 +112,8 @@ namespace TakeawayTitans.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "FName", "LName", "Password", "Type", "Username" },
-                values: new object[,]
-                {
-                    { 1, "Alice", "Johnson", "password", "admin", "admin1" },
-                    { 2, "Bob", "Smith", "password", "admin", "admin2" },
-                    { 3, "Carol", "Davis", "password", "admin", "admin3" },
-                    { 4, "David", "Martinez", "password", "admin", "admin4" },
-                    { 5, "Emma", "Wilson", "password", "admin", "admin5" }
-                });
+                columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "ImageUrl", "LastName", "PasswordHash", "Role" },
+                values: new object[] { 1, new DateTime(2025, 10, 3, 3, 20, 47, 270, DateTimeKind.Utc).AddTicks(8400), "test@gmail.com", "Test", "https://picsum.photos/id/64/200", "User", "$2a$11$uVC32p8KF7OKzaauoXqfnelYKslW5rnH3PNXy13fs.AahbawN9Vyq", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_MenuItemId",
