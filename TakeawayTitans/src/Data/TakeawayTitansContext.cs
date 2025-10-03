@@ -38,29 +38,69 @@ namespace TakeawayTitans.Data
                 new MenuItem { Id = 10, Name = "Berry Blast Smoothie", Price = 6.25m, Description = "Mixed berries blended with yogurt.", ImageUrl = "https://example.com/berry-blast-smoothie.jpg" }
             );
 
-            // Seed 5 users
-            // Seed 5 users with fake names
-            // modelBuilder.Entity<User>().HasData(
-            //     new User { Id = 1, FName = "Alice", LName = "Johnson", Username = "admin1", Password = "password", Type = "admin" },
-            //     new User { Id = 2, FName = "Bob", LName = "Smith", Username = "admin2", Password = "password", Type = "admin" },
-            //     new User { Id = 3, FName = "Carol", LName = "Davis", Username = "admin3", Password = "password", Type = "admin" },
-            //     new User { Id = 4, FName = "David", LName = "Martinez", Username = "admin4", Password = "password", Type = "admin" },
-            //     new User { Id = 5, FName = "Emma", LName = "Wilson", Username = "admin5", Password = "password", Type = "admin" }
-            // );
+            // Seed Users
             var hashedPW = BCrypt.Net.BCrypt.HashPassword("123456");
-            var admin = new User()
-            {
-                Id = 1,
-                Email = "test@gmail.com",
-                PasswordHash = hashedPW,
-                FirstName = "Test",
-                LastName = "User",
-                Role = UserRole.Admin,
-                ImageUrl = "https://picsum.photos/id/64/200",
-                CreatedAt = DateTime.UtcNow,
-            };
-            modelBuilder.Entity<User>().HasData(admin);
 
+            modelBuilder.Entity<User>().HasData(
+                // 3 Admins
+                new User
+                {
+                    Id = 1,
+                    Email = "test@gmail.com",
+                    PasswordHash = hashedPW,
+                    FirstName = "Test",
+                    LastName = "User",
+                    Role = UserRole.Admin,
+                    ImageUrl = "https://picsum.photos/id/64/200",
+                    CreatedAt = DateTime.UtcNow,
+                },
+                new User
+                {
+                    Id = 2,
+                    Email = "alice.johnson@example.com",
+                    PasswordHash = hashedPW,
+                    FirstName = "Alice",
+                    LastName = "Johnson",
+                    Role = UserRole.Admin,
+                    ImageUrl = "https://picsum.photos/id/101/200",
+                    CreatedAt = DateTime.UtcNow,
+                },
+                new User
+                {
+                    Id = 3,
+                    Email = "bob.smith@example.com",
+                    PasswordHash = hashedPW,
+                    FirstName = "Bob",
+                    LastName = "Smith",
+                    Role = UserRole.Admin,
+                    ImageUrl = "https://picsum.photos/id/102/200",
+                    CreatedAt = DateTime.UtcNow,
+                },
+
+                // 2 Regular Users
+                new User
+                {
+                    Id = 4,
+                    Email = "carol.davis@example.com",
+                    PasswordHash = hashedPW,
+                    FirstName = "Carol",
+                    LastName = "Davis",
+                    Role = UserRole.User,
+                    ImageUrl = "https://picsum.photos/id/103/200",
+                    CreatedAt = DateTime.UtcNow,
+                },
+                new User
+                {
+                    Id = 5,
+                    Email = "david.martinez@example.com",
+                    PasswordHash = hashedPW,
+                    FirstName = "David",
+                    LastName = "Martinez",
+                    Role = UserRole.User,
+                    ImageUrl = "https://picsum.photos/id/104/200",
+                    CreatedAt = DateTime.UtcNow,
+                }
+            );
 
             // Orders and OrderItems are intentionally left empty
         }

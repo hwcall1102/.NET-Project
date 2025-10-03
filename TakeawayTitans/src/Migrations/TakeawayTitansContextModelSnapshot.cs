@@ -237,13 +237,57 @@ namespace TakeawayTitans.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 10, 3, 3, 20, 47, 270, DateTimeKind.Utc).AddTicks(8400),
+                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8160),
                             Email = "test@gmail.com",
                             FirstName = "Test",
                             ImageUrl = "https://picsum.photos/id/64/200",
                             LastName = "User",
-                            PasswordHash = "$2a$11$uVC32p8KF7OKzaauoXqfnelYKslW5rnH3PNXy13fs.AahbawN9Vyq",
+                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
                             Role = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8170),
+                            Email = "alice.johnson@example.com",
+                            FirstName = "Alice",
+                            ImageUrl = "https://picsum.photos/id/101/200",
+                            LastName = "Johnson",
+                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8200),
+                            Email = "bob.smith@example.com",
+                            FirstName = "Bob",
+                            ImageUrl = "https://picsum.photos/id/102/200",
+                            LastName = "Smith",
+                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8220),
+                            Email = "carol.davis@example.com",
+                            FirstName = "Carol",
+                            ImageUrl = "https://picsum.photos/id/103/200",
+                            LastName = "Davis",
+                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            Role = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8230),
+                            Email = "david.martinez@example.com",
+                            FirstName = "David",
+                            ImageUrl = "https://picsum.photos/id/104/200",
+                            LastName = "Martinez",
+                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            Role = 0
                         });
                 });
 

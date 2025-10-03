@@ -113,7 +113,14 @@ namespace TakeawayTitans.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "ImageUrl", "LastName", "PasswordHash", "Role" },
-                values: new object[] { 1, new DateTime(2025, 10, 3, 3, 20, 47, 270, DateTimeKind.Utc).AddTicks(8400), "test@gmail.com", "Test", "https://picsum.photos/id/64/200", "User", "$2a$11$uVC32p8KF7OKzaauoXqfnelYKslW5rnH3PNXy13fs.AahbawN9Vyq", 1 });
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8160), "test@gmail.com", "Test", "https://picsum.photos/id/64/200", "User", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
+                    { 2, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8170), "alice.johnson@example.com", "Alice", "https://picsum.photos/id/101/200", "Johnson", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
+                    { 3, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8200), "bob.smith@example.com", "Bob", "https://picsum.photos/id/102/200", "Smith", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
+                    { 4, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8220), "carol.davis@example.com", "Carol", "https://picsum.photos/id/103/200", "Davis", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 0 },
+                    { 5, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8230), "david.martinez@example.com", "David", "https://picsum.photos/id/104/200", "Martinez", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 0 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_MenuItemId",
