@@ -1,16 +1,11 @@
 ﻿@page "/admin-login"
-@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
 @using System.Data.Common
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.EntityFrameworkCore
-@using System.Security.Claims
-@using TakeawayTitans.Data
 @using TakeawayTitans.Models
-@using System.Net.Http.Json
-
+@rendermode InteractiveServer
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
-@inject HttpClient Http
 
 <PageTitle>Admin Login</PageTitle>
 <div class="page">
@@ -43,34 +38,28 @@
 
 
 @code {
-    private LoginModel LoginUser = new ();
+    [SupplyParameterFromForm]
+    private LoginModel LoginUser {get; set;} = new ();
     private string errorMessage = string.Empty;
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthTask {get; set;} = default!;
-    private ClaimsPrincipal? user;
-    protected override async Task OnInitializedAsync()
+    private bool isLoading = false;
+    
+    private async void HandleLogin()
     {
-        user = (await AuthTask).User;
-    }
-
-    private async Task HandleLogin()
-    {
+        isLoading = true;
+        errorMessage = string.Empty;
         try 
         {
-            errorMessage = string.Empty;
-            var dto = new LoginRequest(LoginUser.Email, LoginUser.Password, true);
-            var response = await Http.PostAsJsonAsync(Navigation.ToAbsoluteUri("/api/auth/admin-login"), dto);
-            Console.WriteLine(response);
+            var customAuthenticationStateProvider = (CustomAuthStateProvider)AuthenticationStateProvider;
 
-            if (response.IsSuccessStatusCode)
+            if (string.IsNullOrWhiteSpace(LoginUser.Email) || string.IsNullOrWhiteSpace(LoginUser.Password))
             {
-                Navigation.NavigateTo("/admin-dashboard", true);
+                errorMessage = "Email and password are required.";
+                return;
             }
-            else
-            {
-                errorMessage = await response.Content.ReadAsStringAsync();
-                
-            }
+
+            var token = await customAuthenticationStateProvider.LoginAsync(LoginUser.Email, LoginUser.Password);
+            
+            Navigation.NavigateTo("/postlogin?Token=" + token);
         }
         catch (DbException ex)
         {
@@ -81,6 +70,10 @@
         {
             errorMessage = ex.Message;
             Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 

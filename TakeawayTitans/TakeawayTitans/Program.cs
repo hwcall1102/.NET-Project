@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity;
+using Microsoft.AspNetCore.Components.Authorization;
+using TakeawayTitans;
 
 var builder = WebApplication.CreateBuilder(args);
 var useSqlite = builder.Configuration.GetValue<bool>("UseSqlite");
@@ -33,18 +36,20 @@ builder.Services.AddBlazorBootstrap();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.Cookie.Name = "auth_token";
-        options.LoginPath = "/admin-login";
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/access-denied";
-    });
-builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddControllers();
-builder.Services.AddHttpClient();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddHttpContextAccessor();
+// builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//     .AddCookie(options =>
+//     {
+//         options.Cookie.Name = "auth_token";
+//         options.LoginPath = "/admin-login";
+//         options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+//         options.AccessDeniedPath = "/access-denied";
+//     });
+// builder.Services.AddAuthorization();
+// builder.Services.AddControllers();
+// builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -61,10 +66,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
-app.MapControllers();
+// app.MapControllers();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -1,22 +1,18 @@
-﻿@page "/admin-logout"
-@using Microsoft.AspNetCore.Authentication
-@inject NavigationManager Navigation
+@page "/admin-logout"
+@using System.Drawing
 
-<PageTitle>Logout</PageTitle>
-<div class="page">
-<p class="text-center fs-3">You've successfully logged out of the application</p>
+<PageTitle>Ready to Logout?</PageTitle>
+<div class="row page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert-container">
+                <div class="text-center">
+                    <Icon Name="IconName.PatchExclamation" Size="IconSize.x1" Color="IconColor.Danger" />
+                </div>
+                <p class="text-center fs-4">
+                    Are you sure to log out?
+                </p>
+            </div>
+        </Authorized>
+    </AuthorizeView>
 </div>
-
-@code {
-    [CascadingParameter]
-    public HttpContext? HttpContext{get; set;}
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        if (HttpContext?.User?.Identity?.IsAuthenticated == true)
-        {
-            await HttpContext.SignOutAsync();
-            Navigation.NavigateTo("/logout", true);
-        }
-    }
-}
