@@ -1,6 +1,5 @@
 ﻿using TakeawayTitans.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using TakeawayTitans.Data;
 DotNetEnv.Env.Load(".env.local"); // Load environment variables from .env.local
 
@@ -15,32 +14,50 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("Connection string 'TakeawayTitansContext' not found.");
 }
 
-// Use PostgreSQL instead of SQL Server
+// Use PostgreSQL
 builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Add services to the container.
+// Add Razor Components
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+       .AddInteractiveServerComponents();
+
+// ✅ Register HttpClient for Blazor Server with BaseAddress
+builder.Services.AddScoped(sp =>
+{
+    var baseAddress = builder.Configuration["BaseUrl"] ?? "http://localhost:5062/";
+    return new HttpClient { BaseAddress = new Uri(baseAddress) };
+});
+
+// ✅ Add Controllers for API endpoints
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+}
+else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios
     app.UseHsts();
-    app.UseMigrationsEndPoint();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
 
+// ✅ Map API Controllers
+app.MapControllers();
+
+// Map Razor Components
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

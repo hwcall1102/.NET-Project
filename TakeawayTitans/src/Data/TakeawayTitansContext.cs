@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data.Models;
-using TakeawayTitans.Models;
 
 namespace TakeawayTitans.Data
 {

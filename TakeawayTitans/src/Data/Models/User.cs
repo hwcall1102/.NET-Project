@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-namespace TakeawayTitans.Models;
+namespace TakeawayTitans.Data.Models;
 
 public class User
 {
