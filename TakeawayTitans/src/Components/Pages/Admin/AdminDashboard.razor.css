@@ -1,0 +1,4 @@
+.page {
+    padding: var(--page-padding);
+    min-height: var(--body-height);
+}

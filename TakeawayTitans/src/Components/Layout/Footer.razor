@@ -1,5 +1,19 @@
 ﻿<div class="footer-container">
     &copy; @currentYear Takeaway Titans @team
+    <AuthorizeView>
+        <NotAuthorized>
+            <a href="/admin-login">
+                <iconify-icon icon="dashicons:admin-network" aria-label="Admin" class="icon-admin"></iconify-icon>
+            </a>
+        </NotAuthorized>
+        <Authorized>
+            <a href="/admin-logout">
+                <iconify-icon icon="dashicons:admin-network" aria-label="Admin" class="icon-admin"></iconify-icon>
+            </a>
+        </Authorized>
+    </AuthorizeView>
+    
+    
 </div>
 @code {
     private string currentYear = DateTime.Now.Year.ToString();

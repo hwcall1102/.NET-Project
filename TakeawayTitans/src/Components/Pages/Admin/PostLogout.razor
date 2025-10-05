@@ -1,0 +1,26 @@
+@page "/postlogout"
+@using Microsoft.AspNetCore.Authentication
+@inject NavigationManager Navigation
+
+<PageTitle>Logout</PageTitle>
+<div class="page">
+    <AuthorizeView>
+        <NotAuthorized>
+            <p class="text-center fs-3">You've successfully logged out of the application</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext{get; set;}
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (HttpContext?.User?.Identity?.IsAuthenticated == true)
+        {
+            await HttpContext.SignOutAsync();
+            Navigation.NavigateTo("/logout", true);
+        }
+    }
+}

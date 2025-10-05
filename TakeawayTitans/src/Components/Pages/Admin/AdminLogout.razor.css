@@ -1,0 +1,14 @@
+.page {
+    padding: var(--page-padding);
+    min-height: var(--body-height);
+}
+.alert-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.logout-button {
+    border-style: none;
+    background-color: transparent;
+}

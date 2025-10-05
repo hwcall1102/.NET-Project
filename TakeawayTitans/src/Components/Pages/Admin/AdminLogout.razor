@@ -1,0 +1,39 @@
+@page "/admin-logout"
+@using System.Drawing
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Ready to Logout?</PageTitle>
+<div class="row page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert-container">
+                <div class="text-center">
+                    <Icon Name="IconName.PatchExclamation" Size="IconSize.x1" Color="IconColor.Danger" />
+                </div>
+                <p class="text-center fs-4">
+                    Are you sure to log out?
+                </p>
+                <div>
+                    <button type="button" @onclick="HandleLogout" class="logout-button">
+                        <iconify-icon icon="mdi:logout" width="40" height="40" style="color: var(--amber)"/>
+                    </button>
+                </div>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private void HandleLogout()
+    {
+        if (HttpContextAccessor.HttpContext is not null)
+        {
+            Navigation.NavigateTo("/logout");
+        }
+    }
+}
