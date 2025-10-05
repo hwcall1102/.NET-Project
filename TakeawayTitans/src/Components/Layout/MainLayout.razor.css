@@ -1,8 +1,3 @@
 .page {
     background-color: white;
-    display: flex;
-    flex-direction: column;
-}
-.body {
-    min-height: calc(100vh - 100px - 56px);
 }

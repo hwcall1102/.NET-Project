@@ -7,7 +7,9 @@
     --page-padding: 20px;
     --max-btn-width: min(350px, 100%);
     --max-content-width: min(700px, 100%);
-    --body-height: calc(100vh - 100px - 56px)
+    --nav-height: 100px;
+    --footer-height: 56px;
+    --body-height: calc(100vh - var(--nav-height) - var(--footer-height))
 }
 
 body {

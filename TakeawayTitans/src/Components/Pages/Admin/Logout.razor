@@ -1,16 +1,10 @@
+@page "/logout"
 @using Microsoft.AspNetCore.Components
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
 
-@if (ChildContent is not null)
-{
-    @ChildContent
-}
-
 @code {
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-
+    
     protected override void OnInitialized()
     {
         HttpContextAccessor.HttpContext!.Response.Cookies.Delete(BlazorConstants.AuthCookieName);

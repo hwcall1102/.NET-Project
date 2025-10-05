@@ -1,15 +1,18 @@
 @page "/admin-dashboard"
 
 <PageTitle>Admin Dashboard</PageTitle>
-Admin Dashboard
-<AuthorizeView>
-    <Authorized>
-        <p>Authorized User</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>Not Authorized User</p>
-    </NotAuthorized>
-</AuthorizeView>
+<div class="page">
+    Admin Dashboard
+    <AuthorizeView>
+        <Authorized>
+            <p>Authorized User</p>
+        </Authorized>
+        <NotAuthorized>
+            <p>Not Authorized User</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
 @code {
     
 }

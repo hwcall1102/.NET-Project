@@ -2,6 +2,7 @@
 @using System.Drawing
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager Navigation
+@rendermode InteractiveServer
 
 <PageTitle>Ready to Logout?</PageTitle>
 <div class="row page">
@@ -15,9 +16,9 @@
                     Are you sure to log out?
                 </p>
                 <div>
-                    
-                    <iconify-icon icon="mdi:logout" width="40" height="40" style="color: var(--amber)" @onclick="HandleLogout"/>
-                    
+                    <button type="button" @onclick="HandleLogout" class="logout-button">
+                        <iconify-icon icon="mdi:logout" width="40" height="40" style="color: var(--amber)"/>
+                    </button>
                 </div>
             </div>
         </Authorized>
@@ -32,8 +33,7 @@
     {
         if (HttpContextAccessor.HttpContext is not null)
         {
-            HttpContextAccessor.HttpContext!.Response.Cookies.Delete(BlazorConstants.AuthCookieName);
+            Navigation.NavigateTo("/logout");
         }
-        Navigation.NavigateTo("/admin-login");
     }
 }
