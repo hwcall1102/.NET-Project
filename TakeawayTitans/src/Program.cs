@@ -1,6 +1,11 @@
 ﻿using TakeawayTitans.Components;
 using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity;
+using Microsoft.AspNetCore.Components.Authorization;
+using TakeawayTitans;
+
 DotNetEnv.Env.Load(".env.local"); // Load environment variables from .env.local
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +25,7 @@ builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddBlazorBootstrap();
 
 // Add Razor Components
 builder.Services.AddRazorComponents()
@@ -31,6 +37,10 @@ builder.Services.AddScoped(sp =>
     var baseAddress = builder.Configuration["BaseUrl"] ?? "http://localhost:5062/";
     return new HttpClient { BaseAddress = new Uri(baseAddress) };
 });
+
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddHttpContextAccessor();
 
 // ✅ Add Controllers for API endpoints
 builder.Services.AddControllers();

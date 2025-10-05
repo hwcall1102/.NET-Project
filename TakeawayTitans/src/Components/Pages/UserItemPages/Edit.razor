@@ -1,0 +1,142 @@
+@page "/useritems/edit"
+@using Microsoft.EntityFrameworkCore
+@using TakeawayTitans.Data.Models
+@inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>User Edit</PageTitle>
+
+<h1>User Edit</h1>
+
+<h2>User</h2>
+<hr />
+@if (EditUser is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="row mb-3">
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@EditUser.Email</dd>
+                
+                <dt class="col-sm-3">Created:</dt>
+                <dd class="col-sm-9">@EditUser.CreatedAt.ToShortDateString()</dd>
+            </dl>
+            <EditForm method="post" Model="EditUser" OnValidSubmit="UpdateUser" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert" class="text-danger"/>
+                <input type="hidden" name="EditUser.Email" value="@EditUser!.Email" />
+                <input type="hidden" name="EditUser.Id" value="@EditUser.Id" />
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <InputText id="password" @bind-Value="EditUser.Password" type="password" class="form-control" />
+                    <ValidationMessage For="() => EditUser.Password" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="firstname" class="form-label">First Name:</label>
+                    <InputText id="firstname" @bind-Value="EditUser.FirstName" class="form-control" />
+                    <ValidationMessage For="() => EditUser.FirstName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">Last Name:</label>
+                    <InputText id="lastname" @bind-Value="EditUser.LastName" class="form-control" />
+                    <ValidationMessage For="() => EditUser.LastName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role:</label>
+                    <InputSelect id="role" @bind-Value="EditUser.Role" class="form-select">
+                        @foreach (var role in Enum.GetValues<UserRole>())
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => EditUser.Role" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="imageurl" class="form-label">Image Url:</label>
+                    <InputText id="imageurl" @bind-Value="EditUser.ImageUrl" class="form-control" />
+                    <ValidationMessage For="() => EditUser.ImageUrl" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/useritems">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public User? EditUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        EditUser ??= await context.Users.FirstOrDefaultAsync(user => user.Id == Id);
+
+        if (EditUser is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateUser()
+    {
+
+        if (EditUser is null)
+        {
+            return;
+        }
+
+        using var context = DbFactory.CreateDbContext();
+        var originalUser = await context.Users.FindAsync(EditUser.Id);
+        if (originalUser is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+            return;
+        }
+
+        originalUser.FirstName = EditUser.FirstName;
+        originalUser.LastName = EditUser.LastName;
+        originalUser.Role = EditUser.Role;
+        originalUser.ImageUrl = EditUser.ImageUrl;
+        if (!string.IsNullOrWhiteSpace(EditUser.Password))
+        {
+            originalUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(EditUser.Password);
+        }
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!UserExists(EditUser.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/useritems");
+    }
+
+    private bool UserExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Users.Any(e => e.Id == id);
+    }
+}

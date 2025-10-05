@@ -1,0 +1,52 @@
+@page "/useritems"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using TakeawayTitans.Models
+@using TakeawayTitans.Data
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
+
+<PageTitle>User Index</PageTitle>
+
+<h1>User Index</h1>
+
+<p>
+    <a href="useritems/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Users" Pagination="state">
+    <PropertyColumn Property="item => item.Id"/>
+    <PropertyColumn Property="item => item.Email" />
+    <PropertyColumn Property="item => item.Password" />
+    <PropertyColumn Property="item => item.PasswordHash" />
+    <PropertyColumn Property="item => item.FirstName" />
+    <PropertyColumn Property="item => item.LastName" />
+    <PropertyColumn Property="item => item.ImageUrl" />
+    <PropertyColumn Property="item => item.CreatedAt" />
+    <PropertyColumn Property="item => item.Role" />
+
+    <TemplateColumn Context="useritem">
+        <a href="@($"useritems/edit?id={useritem.Id}")">Edit</a> |
+        <a href="@($"useritems/details?id={useritem.Id}")">Details</a> |
+        <a href="@($"useritems/delete?id={useritem.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private TakeawayTitansContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
+
+<Paginator State="state" />
+
+@code {
+    PaginationState state= new PaginationState { ItemsPerPage = 6 };
+    string filterName = string.Empty;
+}

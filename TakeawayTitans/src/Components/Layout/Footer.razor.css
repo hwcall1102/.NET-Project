@@ -2,3 +2,13 @@
     text-align: center;
     padding: 16px;
 }
+
+.footer-container a, .footer-container a:link, .footer-container a:visited, .footer-container a:active, .footer-container a:hover {
+    color: var(--deep-green);
+}
+.icon-admin {
+    color: var(--deep-green);
+    padding-left: 1rem;
+    width: 16px;
+    height: 16px;
+}

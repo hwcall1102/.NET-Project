@@ -4,6 +4,10 @@
     --cream: #efe7d0;
     --deep-green: #204d43;
     --amber: #cf8930;
+    --page-padding: 20px;
+    --max-btn-width: min(350px, 100%);
+    --max-content-width: min(700px, 100%);
+    --body-height: calc(100vh - 100px - 56px)
 }
 
 body {

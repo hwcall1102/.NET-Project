@@ -1,0 +1,18 @@
+@page "/admin-logout"
+@using System.Drawing
+
+<PageTitle>Ready to Logout?</PageTitle>
+<div class="row page">
+    <AuthorizeView>
+        <Authorized>
+            <div class="alert-container">
+                <div class="text-center">
+                    <Icon Name="IconName.PatchExclamation" Size="IconSize.x1" Color="IconColor.Danger" />
+                </div>
+                <p class="text-center fs-4">
+                    Are you sure to log out?
+                </p>
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</div>
