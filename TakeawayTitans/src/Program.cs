@@ -2,15 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity;
 using Microsoft.AspNetCore.Components.Authorization;
 using TakeawayTitans;
 
-DotNetEnv.Env.Load(".env.local"); // Load environment variables from .env.local
+DotNetEnv.Env.Load(".env.local"); // Load environment variables locally
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Get the connection string from appsettings.json or .env.local
+// Get database connection string (Render uses DATABASE_URL)
 var connectionString = builder.Configuration.GetConnectionString("TakeawayTitansContext")
                        ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
@@ -19,7 +18,7 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("Connection string 'TakeawayTitansContext' not found.");
 }
 
-// Use PostgreSQL
+// ✅ Configure PostgreSQL
 builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -27,15 +26,25 @@ builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddBlazorBootstrap();
 
-// Add Razor Components
+// ✅ Razor Components setup
 builder.Services.AddRazorComponents()
        .AddInteractiveServerComponents();
 
-// ✅ Register HttpClient for Blazor Server with BaseAddress
+// ✅ Environment-aware HttpClient
 builder.Services.AddScoped(sp =>
 {
-    var baseAddress = builder.Configuration["BaseUrl"] ?? "http://localhost:5062/";
-    return new HttpClient { BaseAddress = new Uri(baseAddress) };
+    // Try to get BaseUrl from environment (used in Render)
+    var baseUrl = builder.Configuration["BaseUrl"] 
+                  ?? Environment.GetEnvironmentVariable("BaseUrl");
+
+    if (string.IsNullOrWhiteSpace(baseUrl))
+    {
+        // Local development (use relative path)
+        return new HttpClient { BaseAddress = new Uri("/", UriKind.Relative) };
+    }
+
+    // Production (Render)
+    return new HttpClient { BaseAddress = new Uri(baseUrl) };
 });
 
 builder.Services.AddCascadingAuthenticationState();
@@ -47,7 +56,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// ✅ Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -67,7 +76,7 @@ app.UseAntiforgery();
 // ✅ Map API Controllers
 app.MapControllers();
 
-// Map Razor Components
+// ✅ Map Razor Components
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
