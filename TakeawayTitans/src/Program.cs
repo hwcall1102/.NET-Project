@@ -47,6 +47,19 @@ builder.Services.AddScoped(sp =>
     return new HttpClient { BaseAddress = new Uri(baseUrl) };
 });
 
+// Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(
+        options =>
+        {
+            options.LoginPath = "/admin-login";
+            options.Cookie.Name = BlazorConstants.AuthCookieName;
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            options.SlidingExpiration = true;
+        }
+    );
+builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddHttpContextAccessor();
@@ -71,6 +84,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 
 // ✅ Map API Controllers

@@ -18,20 +18,26 @@
         <div class="form-group">
             <label>Email: <span class="text-danger">*</span></label>
             <div>
-                <TextInput @bind-value="@LoginUser.Email" Placeholder="Enter email address" class="fs-4" />
+                <TextInput @bind-Value="LoginUser.Email" Placeholder="Enter email address" class="fs-4" />
                 <ValidationMessage For="() => LoginUser.Email" />
             </div>
         </div>
         <div class=form-group>
             <label>Password: <span class="text-danger">*</span></label>
             <div>
-                <TextInput @bind-value="@LoginUser.Password" Placeholder="Enter password" Class="fs-4" />
+                <PasswordInput @bind-Value="LoginUser.Password" Placeholder="Enter password" Class="fs-4" />
                 <ValidationMessage For="() => LoginUser.Password" />
             </div>
         </div>
         <div class="row">
-            <Button type="ButtonType.Button" @onclick="ResetForm" class="button btn-reset fs-4">Reset</Button>
-            <Button type="ButtonType.Submit" class="button btn-login fs-4">Login</Button>
+            <Button Type="ButtonType.Button" @onclick="ResetForm" class="button btn-reset fs-4" Disabled=isLoading>Reset</Button>
+            <Button Type="ButtonType.Submit" class="button btn-login fs-4">
+                Login
+                @if (isLoading)
+                {
+                    <Spinner />
+                }
+            </Button>
         </div>
     </EditForm>
 </div>
@@ -40,6 +46,7 @@
 @code {
     [SupplyParameterFromForm]
     private LoginModel LoginUser {get; set;} = new ();
+
     private string errorMessage = string.Empty;
     private bool isLoading = false;
     
@@ -49,6 +56,7 @@
         errorMessage = string.Empty;
         try 
         {
+            
             var customAuthenticationStateProvider = (CustomAuthStateProvider)AuthenticationStateProvider;
 
             if (string.IsNullOrWhiteSpace(LoginUser.Email) || string.IsNullOrWhiteSpace(LoginUser.Password))
@@ -59,7 +67,7 @@
 
             var token = await customAuthenticationStateProvider.LoginAsync(LoginUser.Email, LoginUser.Password);
             
-            Navigation.NavigateTo("/postlogin?Token=" + token);
+            Navigation.NavigateTo($"/postlogin?token={Uri.EscapeDataString(token)}", forceLoad: true);
         }
         catch (DbException ex)
         {
