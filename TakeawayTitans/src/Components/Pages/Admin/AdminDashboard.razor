@@ -1,11 +1,16 @@
 @page "/admin-dashboard"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 <PageTitle>Admin Dashboard</PageTitle>
+
 <div class="page">
-    Admin Dashboard
+    <h2 class="mb-3">Admin Dashboard</h2>    
     <AuthorizeView>
         <Authorized>
-            <p>Authorized User</p>
+            @* <p>Authorized User</p> *@
+            <ul>
+                <li><a href="/admin/menu">Manage Menu Items</a></li>
+            </ul>
         </Authorized>
         <NotAuthorized>
             <p>Not Authorized User</p>
