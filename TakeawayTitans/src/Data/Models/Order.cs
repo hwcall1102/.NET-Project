@@ -6,24 +6,25 @@ namespace TakeawayTitans.Data.Models
     {
         public int OrderId { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public string CustomerName { get; set; } = default!;
+        public string? CustomerName { get; set; }
 
-        [Required]
         [MaxLength(20)]
-        public string CustomerPhone { get; set; } = default!;
+        public string? CustomerPhone { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public string CustomerEmail { get; set; } = default!;
+        public string? CustomerEmail { get; set; }
 
-        // New status field
         [Required]
         [MaxLength(20)]
         public string Status { get; set; } = "Received"; // Received, Preparing, Ready
 
-        // Navigation property
+        [MaxLength(100)]
+        public string? SessionId { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public bool IsCompleted { get; set; } = false;
+
         public List<OrderItem> OrderItems { get; set; } = new();
     }
 }

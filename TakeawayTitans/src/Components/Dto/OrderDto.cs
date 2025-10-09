@@ -4,7 +4,7 @@ namespace TakeawayTitans.Dto
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Status { get; set; } = "Pending";   // Pending, Preparing, Completed, etc.
+        public string Status { get; set; } = "Received";
         public DateTime CreatedAt { get; set; }
 
         public List<OrderItemDto> Items { get; set; } = new();

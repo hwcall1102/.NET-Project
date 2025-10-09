@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TakeawayTitans.Data;
@@ -11,9 +12,11 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    partial class TakeawayTitansContextModelSnapshot : ModelSnapshot
+    [Migration("20251008180924_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 1,
                             Description = "Crisp romaine with Caesar dressing.",
-                            ImageUrl = "https://images.pexels.com/photos/8251537/pexels-photo-8251537.jpeg",
+                            ImageUrl = "https://example.com/caesar-salad.jpg",
                             Name = "Caesar Salad",
                             Price = 7.25m
                         },
@@ -65,7 +68,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 2,
                             Description = "Tomatoes, cucumbers, feta, and olives.",
-                            ImageUrl = "https://www.cookipedia.co.uk/wiki/images/8/87/Greek_salad_recipe.jpg",
+                            ImageUrl = "https://example.com/greek-salad.jpg",
                             Name = "Greek Salad",
                             Price = 7.50m
                         },
@@ -73,7 +76,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 3,
                             Description = "Fresh mixed greens with seasonal veggies.",
-                            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmzYDNf1qIDSjvZLHCi98piiao6gi6K7ZIyw&s",
+                            ImageUrl = "https://example.com/garden-salad.jpg",
                             Name = "Garden Salad",
                             Price = 6.99m
                         },
@@ -81,7 +84,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 4,
                             Description = "Baby spinach, strawberries, and almonds.",
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c4/Salad_with_strawberries.jpg",
+                            ImageUrl = "https://example.com/spinach-salad.jpg",
                             Name = "Spinach Salad",
                             Price = 7.75m
                         },
@@ -89,7 +92,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 5,
                             Description = "Chicken, bacon, avocado, egg, and blue cheese.",
-                            ImageUrl = "https://images.stockcake.com/public/6/f/6/6f6293cf-b710-40e3-b0c6-af329f49c182/hearty-cobb-salad-stockcake.jpg",
+                            ImageUrl = "https://example.com/cobb-salad.jpg",
                             Name = "Cobb Salad",
                             Price = 8.50m
                         },
@@ -97,7 +100,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 6,
                             Description = "Fresh strawberries blended with yogurt.",
-                            ImageUrl = "https://images.pexels.com/photos/8169597/pexels-photo-8169597.jpeg",
+                            ImageUrl = "https://example.com/strawberry-smoothie.jpg",
                             Name = "Strawberry Smoothie",
                             Price = 5.50m
                         },
@@ -105,7 +108,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 7,
                             Description = "Ripe mangoes with orange juice.",
-                            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEg03LIorRnJYimTc6rQ0rLUd_B9RrKp0GnA&s",
+                            ImageUrl = "https://example.com/mango-smoothie.jpg",
                             Name = "Mango Smoothie",
                             Price = 5.75m
                         },
@@ -113,7 +116,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 8,
                             Description = "Banana, milk, and honey.",
-                            ImageUrl = "https://images.rawpixel.com/image_social_landscape/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvaXMxMTA0NS1pbWFnZS1rd3lzaTYwZC5qcGc.jpg",
+                            ImageUrl = "https://example.com/banana-smoothie.jpg",
                             Name = "Banana Smoothie",
                             Price = 5.25m
                         },
@@ -121,7 +124,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 9,
                             Description = "Spinach, kale, apple, and banana.",
-                            ImageUrl = "https://i1.pickpik.com/photos/153/22/476/green-smoothie-drink-healthy-preview.jpg",
+                            ImageUrl = "https://example.com/green-smoothie.jpg",
                             Name = "Green Smoothie",
                             Price = 6.00m
                         },
@@ -129,7 +132,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 10,
                             Description = "Mixed berries blended with yogurt.",
-                            ImageUrl = "https://i1.pickpik.com/photos/585/986/375/smoothie-milkshake-mixed-berry-preview.jpg",
+                            ImageUrl = "https://example.com/berry-blast-smoothie.jpg",
                             Name = "Berry Blast Smoothie",
                             Price = 6.25m
                         });
@@ -160,10 +163,6 @@ namespace TakeawayTitans.Migrations
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("SessionId")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -244,56 +243,56 @@ namespace TakeawayTitans.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 10, 8, 18, 55, 31, 679, DateTimeKind.Utc).AddTicks(3870),
+                            CreatedAt = new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4460),
                             Email = "test@gmail.com",
                             FirstName = "Test",
                             ImageUrl = "https://picsum.photos/id/64/200",
                             LastName = "User",
-                            PasswordHash = "$2a$11$LM5NJRQk71/OmMCvNtiTi.6hfPXgCRG9tjh6VTV7vrsFhLFGoFI4u",
+                            PasswordHash = "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa",
                             Role = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 10, 8, 18, 55, 31, 679, DateTimeKind.Utc).AddTicks(3880),
+                            CreatedAt = new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4510),
                             Email = "alice.johnson@example.com",
                             FirstName = "Alice",
                             ImageUrl = "https://picsum.photos/id/101/200",
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$LM5NJRQk71/OmMCvNtiTi.6hfPXgCRG9tjh6VTV7vrsFhLFGoFI4u",
+                            PasswordHash = "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa",
                             Role = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 10, 8, 18, 55, 31, 679, DateTimeKind.Utc).AddTicks(3910),
+                            CreatedAt = new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4560),
                             Email = "bob.smith@example.com",
                             FirstName = "Bob",
                             ImageUrl = "https://picsum.photos/id/102/200",
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$LM5NJRQk71/OmMCvNtiTi.6hfPXgCRG9tjh6VTV7vrsFhLFGoFI4u",
+                            PasswordHash = "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa",
                             Role = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 10, 8, 18, 55, 31, 679, DateTimeKind.Utc).AddTicks(3930),
+                            CreatedAt = new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4580),
                             Email = "carol.davis@example.com",
                             FirstName = "Carol",
                             ImageUrl = "https://picsum.photos/id/103/200",
                             LastName = "Davis",
-                            PasswordHash = "$2a$11$LM5NJRQk71/OmMCvNtiTi.6hfPXgCRG9tjh6VTV7vrsFhLFGoFI4u",
+                            PasswordHash = "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa",
                             Role = 0
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 10, 8, 18, 55, 31, 679, DateTimeKind.Utc).AddTicks(3930),
+                            CreatedAt = new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4580),
                             Email = "david.martinez@example.com",
                             FirstName = "David",
                             ImageUrl = "https://picsum.photos/id/104/200",
                             LastName = "Martinez",
-                            PasswordHash = "$2a$11$LM5NJRQk71/OmMCvNtiTi.6hfPXgCRG9tjh6VTV7vrsFhLFGoFI4u",
+                            PasswordHash = "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa",
                             Role = 0
                         });
                 });
