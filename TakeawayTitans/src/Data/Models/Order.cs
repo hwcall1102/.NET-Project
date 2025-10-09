@@ -2,6 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TakeawayTitans.Data.Models
 {
+    public enum OrderStatus
+    {
+        Received,
+        Preparing,
+        Ready,
+        Completed,
+        Canceled
+    }
+
     public class Order
     {
         public int OrderId { get; set; }
@@ -9,21 +18,16 @@ namespace TakeawayTitans.Data.Models
         [MaxLength(100)]
         public string? CustomerName { get; set; }
 
-        [MaxLength(20)]
+        [MaxLength(20), Phone]
         public string? CustomerPhone { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(100), EmailAddress]
         public string? CustomerEmail { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string Status { get; set; } = "Received"; // Received, Preparing, Ready
+        public OrderStatus Status { get; set; } = OrderStatus.Received;
 
-        [MaxLength(100)]
-        public string? SessionId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public bool IsCompleted { get; set; } = false;
 
         public List<OrderItem> OrderItems { get; set; } = new();
     }

@@ -1,10 +1,12 @@
 namespace TakeawayTitans.Dto
 {
+    using TakeawayTitans.Data.Models;
+
     public class OrderDto
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Status { get; set; } = "Received";
+        public OrderStatus Status { get; set; } = OrderStatus.Received;
         public DateTime CreatedAt { get; set; }
 
         public List<OrderItemDto> Items { get; set; } = new();

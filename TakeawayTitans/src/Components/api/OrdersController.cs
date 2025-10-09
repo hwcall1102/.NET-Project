@@ -31,9 +31,8 @@ namespace TakeawayTitans.Api
                 CustomerName = checkout.CustomerName,
                 CustomerEmail = checkout.CustomerEmail,
                 CustomerPhone = checkout.CustomerPhone,
-                Status = "Received",
+                Status = OrderStatus.Received,
                 CreatedAt = DateTime.UtcNow,
-                IsCompleted = false
             };
 
             // Add order items
