@@ -1,6 +1,5 @@
 @page "/admin-order"
 @rendermode InteractiveServer
-@implements IAsyncDisposable
 @using Microsoft.EntityFrameworkCore
 @using TakeawayTitans.Data
 @using TakeawayTitans.Data.Models
@@ -21,43 +20,7 @@
                 <div class="order-container">
                     @foreach (var order in orders)
                     {
-                        <div class="order-card">
-                            <p @onclick="@(() => Toggle(order.OrderId))" class="order-code fs-1">
-                                Order Code: @order.OrderCode
-                            </p>
-                            @if (expandedOrders.Contains(order.OrderId))
-                            {
-                                <div class="order-details">
-                                    <p class="fs-2 fw-bold">Customer Name: @order.CustomerName</p>
-                                    <p class="fs-5">@order.CustomerEmail</p>
-                                    <p class="fs-5">Phone: @order.CustomerPhone</p>
-                                    <p class="fs-3">Order Details</p>
-                                    <div class="order-detail-container">
-                                        @foreach (var item in order.OrderItems)
-                                        {
-                                            <div class="order-detail-item-container">
-                                                <div class="order-detail-image">
-                                                    <img src="@item.MenuItem.ImageUrl" alt="@item.MenuItem.Name" />
-                                                </div>
-                                                <div class="order-detail-item">
-                                                    <p>@item.MenuItem.Name</p>
-                                                    <p>Quantity: @item.Quantity</p>
-                                                    @if (!string.IsNullOrWhiteSpace(item.Customization))
-                                                    {
-                                                        <p>Notes: @item.Customization</p>
-                                                    }
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                    <p class="fs-3">Total amount: @TotalFor(order).ToString("C")</p>
-                                    <div class="order-status-container">
-                                        <span class="fs-3">Status: </span>
-                                        <span class="badge bg-secondary">@order.Status</span>
-                                    </div>
-                                </div>
-                            }
-                        </div>
+                        <OrderCard Order="order" />
                     }
                 </div>
             }
@@ -68,7 +31,6 @@
 @code {
     private TakeawayTitansContext dbContext = default!;
     private readonly List<Order> orders = new();
-    private readonly HashSet<int> expandedOrders = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,22 +44,5 @@
         orders.AddRange(loadedOrders);
     }
 
-    private decimal TotalFor(Order order) =>
-        order.OrderItems.Sum(item => item.MenuItem.Price * item.Quantity);
-
-    private void Toggle(int orderId)
-    {
-        if (!expandedOrders.Add(orderId))
-        {
-            expandedOrders.Remove(orderId);
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (dbContext is not null)
-        {
-            await dbContext.DisposeAsync();
-        }
-    }
+    
 }

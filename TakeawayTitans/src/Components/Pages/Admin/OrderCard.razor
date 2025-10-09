@@ -1,0 +1,73 @@
+@using TakeawayTitans.Data.Models
+<div class="order-card">
+    <p @onclick="ToggleCollapse" class="order-code fs-1">
+        Order Code: @Order.OrderCode
+    </p>
+    <div class="order-collapse">
+        <Collapse @ref="collapse">
+            <p class="fs-2 fw-bold">@Order.CustomerName</p>
+            <p class="fs-5">@Order.CustomerEmail</p>
+            <p class="fs-5">Phone: @Order.CustomerPhone</p>
+            <p class="fs-3">Order Details</p>
+            <div class="order-detail-container">
+                @foreach (var item in Order.OrderItems)
+                {
+                    <div class="order-detail-item-container">
+                        <div class="order-detail-image">
+                            <img src="@item.MenuItem.ImageUrl" alt="@item.MenuItem.Name" />
+                        </div>
+                        <div class="order-detail-item">
+                            <p>@item.MenuItem.Name</p>
+                            <p>Quantity: @item.Quantity</p>
+                            @if (!string.IsNullOrWhiteSpace(item.Customization))
+                            {
+                                <p>Notes: @item.Customization</p>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <p class="fs-3">Total amount: @Total.ToString("C")</p>
+            <div>
+                <p>Received: @FormatTimestamp(Order.ReceivedAt)</p>
+                <p>Prep Start: @FormatTimestamp(Order.PreparingAt)</p>
+                <p>Ready: @FormatTimestamp(Order.ReadyAt)</p>
+                <p>Pickup: @FormatTimestamp(Order.CompletedAt)</p>
+                <p>Canceled: @FormatTimestamp(Order.CanceledAt)</p>
+            </div>
+            <div class="order-status-container">
+                <span class="fs-3">Status: </span>
+                <button class="@GetStatusClass(OrderStatus.Received)" disabled="@IsStatusDisabled(OrderStatus.Received)">Received</button>
+                <button class="@GetStatusClass(OrderStatus.Preparing)" disabled="@IsStatusDisabled(OrderStatus.Preparing)">Preparing</button>
+                <button class="@GetStatusClass(OrderStatus.Ready)" disabled="@IsStatusDisabled(OrderStatus.Ready)">Ready</button>
+                <button class="@GetStatusClass(OrderStatus.Completed)" disabled="@IsStatusDisabled(OrderStatus.Completed)">Completed</button>
+                <button class="@GetStatusClass(OrderStatus.Canceled)" disabled="@IsStatusDisabled(OrderStatus.Canceled)">Canceled</button>
+            </div>
+        </Collapse>
+    </div>
+    
+    
+</div>
+
+@code {
+    [Parameter]
+    public Order Order {get; set;} = default!;
+    private Collapse collapse = default!;
+    private async Task ToggleCollapse() => await collapse.ToggleAsync();
+    private decimal Total => Order.OrderItems.Sum(i => i.MenuItem.Price * i.Quantity);
+
+    private string GetStatusClass(OrderStatus status) =>
+        Order.Status == status ? "button is-active" : "button";
+
+    private bool IsStatusDisabled(OrderStatus status) => Order.Status != status;
+
+    private static string FormatTimestamp(DateTime? timestamp)
+    {
+        if (timestamp is not DateTime value)
+        {
+            return "—";
+        }
+
+        return value.ToLocalTime().ToString("MMM d, yyyy h:mm tt");
+    }
+}
