@@ -102,6 +102,11 @@ namespace TakeawayTitans.Data
             );
 
             modelBuilder.Entity<Order>()
+                .Property(o => o.OrderCode)
+                .HasMaxLength(4)
+                .IsRequired();
+
+            modelBuilder.Entity<Order>()
                 .Property(o => o.Status)
                 .HasConversion<string>()
                 .HasMaxLength(20)
@@ -112,47 +117,65 @@ namespace TakeawayTitans.Data
                 new Order
                 {
                     OrderId = 1,
+                    OrderCode = "4821",
                     CustomerName = "Morgan Park",
                     CustomerPhone = "555-0912",
                     CustomerEmail = "morgan.park@example.com",
                     Status = OrderStatus.Received,
                     CreatedAt = new DateTime(2025, 10, 3, 10, 00, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 10, 00, 0, DateTimeKind.Utc),
                 },
                 new Order
                 {
                     OrderId = 2,
+                    OrderCode = "1734",
                     CustomerName = "Jamie Johnson",
                     CustomerPhone = "555-0134",
                     CustomerEmail = "jamie.johnson@example.com",
                     Status = OrderStatus.Preparing,
                     CreatedAt = new DateTime(2025, 10, 1, 15, 30, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 1, 15, 15, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 1, 15, 30, 0, DateTimeKind.Utc),
                 },
                 new Order
                 {
                     OrderId = 3,
+                    OrderCode = "9056",
                     CustomerName = "Taylor Nguyen",
                     CustomerPhone = "555-0456",
                     CustomerEmail = "taylor.nguyen@example.com",
                     Status = OrderStatus.Ready,
                     CreatedAt = new DateTime(2025, 10, 2, 11, 15, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 2, 11, 00, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 2, 11, 05, 0, DateTimeKind.Utc),
+                    ReadyAt = new DateTime(2025, 10, 2, 11, 15, 0, DateTimeKind.Utc),
                 },
                 new Order
                 {
                     OrderId = 4,
+                    OrderCode = "6243",
                     CustomerName = "Riley Santos",
                     CustomerPhone = "555-0933",
                     CustomerEmail = "riley.santos@example.com",
                     Status = OrderStatus.Completed,
                     CreatedAt = new DateTime(2025, 10, 3, 11, 30, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 11, 10, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 3, 11, 15, 0, DateTimeKind.Utc),
+                    ReadyAt = new DateTime(2025, 10, 3, 11, 25, 0, DateTimeKind.Utc),
+                    CompletedAt = new DateTime(2025, 10, 3, 11, 30, 0, DateTimeKind.Utc),
                 },
                 new Order
                 {
                     OrderId = 5,
+                    OrderCode = "2189",
                     CustomerName = "Jordan Lee",
                     CustomerPhone = "555-0977",
                     CustomerEmail = "jordan.lee@example.com",
                     Status = OrderStatus.Canceled,
                     CreatedAt = new DateTime(2025, 10, 3, 12, 45, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 12, 30, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 3, 12, 35, 0, DateTimeKind.Utc),
+                    CanceledAt = new DateTime(2025, 10, 3, 12, 45, 0, DateTimeKind.Utc),
                 }
             );
 

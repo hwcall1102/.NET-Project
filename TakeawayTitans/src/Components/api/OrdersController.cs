@@ -33,6 +33,7 @@ namespace TakeawayTitans.Api
                 CustomerPhone = checkout.CustomerPhone,
                 Status = OrderStatus.Received,
                 CreatedAt = DateTime.UtcNow,
+                ReceivedAt = DateTime.UtcNow,
             };
 
             // Add order items
@@ -49,7 +50,7 @@ namespace TakeawayTitans.Api
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return Ok(new { order.OrderId });
+            return Ok(new { order.OrderId, order.OrderCode });
         }
     }
 }

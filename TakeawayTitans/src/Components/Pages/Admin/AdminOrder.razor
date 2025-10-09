@@ -14,7 +14,7 @@
             <h1>Admin Order Management</h1>
             @if (orders.Count == 0)
             {
-                <p>No orders available.</p>
+                <p class="fs-1">No orders available.</p>
             }
             else
             {
@@ -23,7 +23,7 @@
                     {
                         <div class="order-card">
                             <p @onclick="@(() => Toggle(order.OrderId))" class="order-code fs-1">
-                                Order Code: @order.OrderId
+                                Order Code: @order.OrderCode
                             </p>
                             @if (expandedOrders.Contains(order.OrderId))
                             {
