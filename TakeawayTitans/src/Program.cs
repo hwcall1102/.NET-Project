@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using TakeawayTitans.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using TakeawayTitans.Services; // ShoppingCartService namespace
 using TakeawayTitans;
 
-DotNetEnv.Env.Load(".env.local"); // Load environment variables locally
+DotNetEnv.Env.Load(".env.local"); // Load local environment variables
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,58 +19,59 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("Connection string 'TakeawayTitansContext' not found.");
 }
 
-// ✅ Configure PostgreSQL
+// -------------------- Services --------------------
+
+// Configure PostgreSQL
 builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
     options.UseNpgsql(connectionString));
 
+// Shopping Cart - scoped per user
+builder.Services.AddScoped<ShoppingCartService>();
+
+// QuickGrid and Blazor Bootstrap
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddBlazorBootstrap();
 
-// ✅ Razor Components setup
+// Razor Components setup
 builder.Services.AddRazorComponents()
        .AddInteractiveServerComponents();
 
-// ✅ Environment-aware HttpClient
+// HttpClient per user
 builder.Services.AddScoped(sp =>
 {
-    // Try to get BaseUrl from environment (used in Render)
-    var baseUrl = builder.Configuration["BaseUrl"] 
+    var baseUrl = builder.Configuration["BaseUrl"]
                   ?? Environment.GetEnvironmentVariable("BaseUrl");
 
     if (string.IsNullOrWhiteSpace(baseUrl))
-    {
-        // Local development (use relative path)
         return new HttpClient { BaseAddress = new Uri("/", UriKind.Relative) };
-    }
 
-    // Production (Render)
     return new HttpClient { BaseAddress = new Uri(baseUrl) };
 });
 
 // Authentication
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(
-        options =>
-        {
-            options.LoginPath = "/admin-login";
-            options.Cookie.Name = BlazorConstants.AuthCookieName;
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-            options.SlidingExpiration = true;
-        }
-    );
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/admin-login";
+        options.Cookie.Name = BlazorConstants.AuthCookieName;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+    });
+
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddHttpContextAccessor();
 
-// ✅ Add Controllers for API endpoints
+// Add Controllers for API endpoints
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// ✅ Configure the HTTP request pipeline
+// -------------------- HTTP Pipeline --------------------
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -88,10 +90,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
 
-// ✅ Map API Controllers
+// Map API Controllers
 app.MapControllers();
 
-// ✅ Map Razor Components
+// Map Razor Components
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

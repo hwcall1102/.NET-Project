@@ -36,10 +36,12 @@ namespace TakeawayTitans.Migrations
                 {
                     OrderId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    CustomerPhone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    CustomerEmail = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
+                    CustomerName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CustomerPhone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    CustomerEmail = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,11 +117,11 @@ namespace TakeawayTitans.Migrations
                 columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "ImageUrl", "LastName", "PasswordHash", "Role" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8160), "test@gmail.com", "Test", "https://picsum.photos/id/64/200", "User", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
-                    { 2, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8170), "alice.johnson@example.com", "Alice", "https://picsum.photos/id/101/200", "Johnson", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
-                    { 3, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8200), "bob.smith@example.com", "Bob", "https://picsum.photos/id/102/200", "Smith", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 1 },
-                    { 4, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8220), "carol.davis@example.com", "Carol", "https://picsum.photos/id/103/200", "Davis", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 0 },
-                    { 5, new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8230), "david.martinez@example.com", "David", "https://picsum.photos/id/104/200", "Martinez", "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e", 0 }
+                    { 1, new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4460), "test@gmail.com", "Test", "https://picsum.photos/id/64/200", "User", "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa", 1 },
+                    { 2, new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4510), "alice.johnson@example.com", "Alice", "https://picsum.photos/id/101/200", "Johnson", "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa", 1 },
+                    { 3, new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4560), "bob.smith@example.com", "Bob", "https://picsum.photos/id/102/200", "Smith", "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa", 1 },
+                    { 4, new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4580), "carol.davis@example.com", "Carol", "https://picsum.photos/id/103/200", "Davis", "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa", 0 },
+                    { 5, new DateTime(2025, 10, 8, 18, 9, 23, 88, DateTimeKind.Utc).AddTicks(4580), "david.martinez@example.com", "David", "https://picsum.photos/id/104/200", "Martinez", "$2a$11$kHZwgzIn.1zBKAcY751BAu.4.xUifrRPuaxcSErOo.WgpF14D4cCa", 0 }
                 });
 
             migrationBuilder.CreateIndex(
