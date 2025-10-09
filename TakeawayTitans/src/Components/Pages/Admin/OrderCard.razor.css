@@ -1,11 +1,13 @@
 .order-card {
     margin-bottom: 10px;
+    margin-left: 10px;
 }
 .order-code {
     background-color: var(--amber);
     color: white;
     cursor: pointer;
     padding-left: 10px;
+    border-radius: 10px;
 }
 .order-collapse {
     padding-left: 10px;

@@ -56,10 +56,28 @@
     private async Task ToggleCollapse() => await collapse.ToggleAsync();
     private decimal Total => Order.OrderItems.Sum(i => i.MenuItem.Price * i.Quantity);
 
-    private string GetStatusClass(OrderStatus status) =>
-        Order.Status == status ? "button is-active" : "button";
+    private string GetStatusClass(OrderStatus status)
+    {
+        var enabledStatus = GetEnabledStatus();
+        return enabledStatus.HasValue && enabledStatus == status
+            ? "button is-active"
+            : "button";
+    }
 
-    private bool IsStatusDisabled(OrderStatus status) => Order.Status != status;
+    private bool IsStatusDisabled(OrderStatus status)
+    {
+        var enabledStatus = GetEnabledStatus();
+        return !enabledStatus.HasValue || enabledStatus != status;
+    }
+
+    private OrderStatus? GetEnabledStatus() =>
+        Order.Status switch
+        {
+            OrderStatus.Received => OrderStatus.Preparing,
+            OrderStatus.Preparing => OrderStatus.Ready,
+            OrderStatus.Ready => OrderStatus.Completed,
+            _ => null
+        };
 
     private static string FormatTimestamp(DateTime? timestamp)
     {
