@@ -8,11 +8,11 @@
         <AuthorizeView>
             <Authorized Context="auth">
                 <h1>
+                    <iconify-icon icon="la:tools" width="32" height="32" />
                     Admin Dashboard 
                     <span class="user">
                         (@auth.User.Identity?.Name)
                     </span>
-                    <iconify-icon icon="la:tools" width="32" height="32" />
                 </h1>
                 <div class="button-container">
                     <button type="button" class="button" @onclick="GoToOrder">
