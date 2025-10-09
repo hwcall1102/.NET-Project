@@ -1,6 +1,6 @@
 @using TakeawayTitans.Data.Models
 <div class="order-card">
-    <p @onclick="ToggleCollapse" class="order-code fs-1">
+    <p @onclick="ToggleCollapse" class="order-code fs-3">
         Order Code: @Order.OrderCode
     </p>
     <div class="order-collapse">
@@ -36,7 +36,7 @@
                 <p>Canceled: @FormatTimestamp(Order.CanceledAt)</p>
             </div>
             <div class="order-status-container">
-                <span class="fs-3">Status: </span>
+                @* <span class="fs-3">Status: </span> *@
                 <button class="@GetStatusClass(OrderStatus.Received)" disabled="@IsStatusDisabled(OrderStatus.Received)">Received</button>
                 <button class="@GetStatusClass(OrderStatus.Preparing)" disabled="@IsStatusDisabled(OrderStatus.Preparing)">Preparing</button>
                 <button class="@GetStatusClass(OrderStatus.Ready)" disabled="@IsStatusDisabled(OrderStatus.Ready)">Ready</button>

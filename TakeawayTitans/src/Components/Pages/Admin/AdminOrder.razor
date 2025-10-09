@@ -18,11 +18,87 @@
             else
             {
                 <div class="order-container">
+                <Tabs NavStyle="NavStyle.VerticalUnderline" Class="fs-4">
+                    <Tab Title="Received">
+                        <Content>
+                            @{
+                                var receivedOrders = GetOrdersByStatus(OrderStatus.Received).ToList();
+                            }
+                            @if (receivedOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are waiting to be acknowledged.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in receivedOrders)
+                                {
+                                    <OrderCard Order="order" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="Preparing">
+                        <Content>
+                            @{
+                                var preparingOrders = GetOrdersByStatus(OrderStatus.Preparing).ToList();
+                            }
+                            @if (preparingOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are currently being prepared.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in preparingOrders)
+                                {
+                                    <OrderCard Order="order" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="Ready">
+                        <Content>
+                            @{
+                                var readyOrders = GetOrdersByStatus(OrderStatus.Ready).ToList();
+                            }
+                            @if (readyOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are ready for pickup.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in readyOrders)
+                                {
+                                    <OrderCard Order="order" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="History">
+                        <Content>
+                            @{
+                                var historicalOrders = GetOrdersByStatus(OrderStatus.Completed, OrderStatus.Canceled).ToList();
+                            }
+                            @if (historicalOrders.Count == 0)
+                            {
+                                <p class="fs-5">No completed or canceled orders yet.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in historicalOrders)
+                                {
+                                    <OrderCard Order="order" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                </Tabs>
+                </div>
+                @* <div class="order-container">
                     @foreach (var order in orders)
                     {
                         <OrderCard Order="order" />
                     }
-                </div>
+                </div> *@
             }
         </div>
     </Authorized>
@@ -44,5 +120,6 @@
         orders.AddRange(loadedOrders);
     }
 
-    
+    private IEnumerable<Order> GetOrdersByStatus(params OrderStatus[] statuses) =>
+        orders.Where(order => statuses.Contains(order.Status));
 }
