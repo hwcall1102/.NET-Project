@@ -1,8 +1,47 @@
 @page "/admin-order"
+@rendermode InteractiveServer
 
 <PageTitle>Admin Order Management</PageTitle>
 <AuthorizeView>
     <Authorized>
-        <p>Admin Order Management</p>
+        <div class="page">
+            <h1>Admin Order Management</h1>
+            <div class="order-container">
+                <p @onclick="ToggleCollapseAsync" class="order-code fs-1">Order Code: 3456</p>
+                <Collapse @ref="collapse1">
+                    <p class="fs-2 fw-bold">Customer Name: JJ</p>
+                    <p class="fs-3">Order Details</p>
+                    <div class="order-detail-container">
+                        <div class="order-detail-item-container">
+                            <div class="order-detail-image"><img src="https://placehold.net/default.png" alt="placeholder" /></div>
+                            <div class="order-detail-item">
+                                <p>Salad 1</p>
+                                <p>Quantity: 2</p>
+                            </div>
+                        </div>
+                        <div class="order-detail-item-container">
+                            <div class="order-detail-image"><img src="https://placehold.net/default.png" alt="placeholder" /></div>
+                            <div class="order-detail-item">
+                                <p>Salad 1</p>
+                                <p>Quantity: 2</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="fs-3">Total amount: $123</p>
+                    <div class="order-status-container">
+                        <span class="fs-3">Status: </span>
+                        <button class="button" type="button">Preparing</button>
+                        <button class="button" type="button">Ready</button>
+                        <button class="button" type="button">Done</button>
+                        <button class="button" type="button">Canceled</button>
+                    </div>
+                </Collapse>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
+
+@code {
+    private async Task ToggleCollapseAsync() => await collapse1.ToggleAsync();
+    Collapse collapse1 = default!;
+}
