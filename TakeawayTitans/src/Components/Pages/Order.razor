@@ -73,7 +73,7 @@ else
         Cart.OnChange -= StateHasChanged; // clean up
     }
 
-    private void GoToMenu() => Navigation.NavigateTo("/menu");
+   void GoToMenu() => Navigation.NavigateTo("/menu");
 
     private void ChangeQuantity(TakeawayTitans.Dto.CartItemDto item, int delta)
     {
