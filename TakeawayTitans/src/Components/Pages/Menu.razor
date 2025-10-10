@@ -108,7 +108,7 @@ else
         var cartItem = new CartItemDto
         {
             MenuItemId = item.Id,
-            Name = item.Name,
+            MenuItemName = item.Name,
             Price = item.Price,
             Quantity = quantity,
             Customization = notes
@@ -121,6 +121,6 @@ else
         quantity = 1;
         notes = string.Empty;
 
-        Console.WriteLine($"Added {cartItem.Quantity}x {cartItem.Name} to cart.");
+        Console.WriteLine($"Added {cartItem.Quantity}x {cartItem.MenuItemName} to cart.");
     }
 }

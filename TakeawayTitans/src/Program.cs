@@ -25,8 +25,8 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContextFactory<TakeawayTitansContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Shopping Cart - scoped per user
-builder.Services.AddScoped<ShoppingCartService>();
+// ✅ Shopping Cart - keep persistent across pages (singleton)
+builder.Services.AddSingleton<ShoppingCartService>();
 
 // QuickGrid and Blazor Bootstrap
 builder.Services.AddQuickGridEntityFrameworkAdapter();
