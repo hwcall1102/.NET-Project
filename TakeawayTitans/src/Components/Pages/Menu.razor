@@ -1,6 +1,7 @@
 ﻿@page "/menu"
 @using TakeawayTitans.Dto
 @using TakeawayTitans.Services
+@using TakeawayTitans.Data.Models
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject ShoppingCartService CartService
@@ -66,9 +67,23 @@ else
     private int quantity = 1;
     private string notes = string.Empty;
 
+    private Func<Task>? cartChangedHandler;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadMenu();
+    }
+
+    protected override void OnInitialized()
+    {
+        cartChangedHandler = () => InvokeAsync(StateHasChanged);
+        CartService.OnChange += cartChangedHandler;
+    }
+
+    public void Dispose()
+    {
+        if (cartChangedHandler != null)
+            CartService.OnChange -= cartChangedHandler;
     }
 
     private async Task LoadMenu()
@@ -104,8 +119,6 @@ else
     {
         quantity += delta;
         if (quantity < 1) quantity = 1;
-
-        Console.WriteLine($"Quantity changed to: {quantity}");
     }
 
     private void AddToCart(MenuItemDto item)
@@ -124,7 +137,5 @@ else
         selectedItemId = -1;
         quantity = 1;
         notes = string.Empty;
-
-        Console.WriteLine($"Added {cartItem.Quantity}x {cartItem.MenuItemName} to cart.");
     }
 }
