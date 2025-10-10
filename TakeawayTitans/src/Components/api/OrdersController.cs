@@ -17,21 +17,40 @@ namespace TakeawayTitans.Api
             _context = context;
         }
 
-        [HttpPost("additem")]
-        public async Task<IActionResult> AddItem(OrderItemCreateDto dto)
+        // Create a new order from the shopping cart
+        [HttpPost("checkout")]
+        public async Task<IActionResult> Checkout([FromBody] CheckoutDto checkout)
         {
-            var orderItem = new OrderItem
+            if (checkout == null || checkout.Items == null || !checkout.Items.Any())
             {
-                MenuItemId = dto.MenuItemId,
-                Quantity = dto.Quantity,
-                Customization = dto.Customization
+                return BadRequest("Cart is empty.");
+            }
+
+            var order = new Order
+            {
+                CustomerName = checkout.CustomerName,
+                CustomerEmail = checkout.CustomerEmail,
+                CustomerPhone = checkout.CustomerPhone,
+                Status = OrderStatus.Received,
+                CreatedAt = DateTime.UtcNow,
+                ReceivedAt = DateTime.UtcNow,
             };
 
-            _context.OrderItems.Add(orderItem);
+            // Add order items
+            foreach (var item in checkout.Items)
+            {
+                order.OrderItems.Add(new OrderItem
+                {
+                    MenuItemId = item.MenuItemId,
+                    Quantity = item.Quantity,
+                    Customization = item.Customization
+                });
+            }
+
+            _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return Ok(orderItem);
+            return Ok(new { order.OrderId, order.OrderCode });
         }
     }
 }
-

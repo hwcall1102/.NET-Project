@@ -1,0 +1,53 @@
+.page {
+    padding: var(--page-padding);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    min-height: var(--body-height);
+}
+
+.page ::deep form {
+    width: var(--max-content-width);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--deep-green);
+    padding: 20px;
+    border-radius: 16px;
+    gap: 10px;
+    box-shadow: 0 0 50px rgba(32, 77, 67, 0.35);;
+}
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+::deep .valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+::deep .invalid {
+    outline: 1px solid red;
+}
+
+::deep .validation-message {
+    color: red;
+}
+
+::deep .button {
+    width: 90%;
+    border: 20px;
+    margin: 10px auto;
+}
+::deep .btn-reset {
+    background-color: var(--amber);
+    color: white;
+}
+
+::deep .btn-login {
+    background-color: var(--deep-green);
+    color: white;
+}

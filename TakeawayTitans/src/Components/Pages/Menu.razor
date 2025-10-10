@@ -1,7 +1,10 @@
 ﻿@page "/menu"
 @using TakeawayTitans.Dto
+@using TakeawayTitans.Services
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject ShoppingCartService CartService
+@rendermode InteractiveServer
 
 <h3 class="mb-4">Menu</h3>
 
@@ -27,7 +30,7 @@ else
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@item.Name</h5>
                         <p class="card-text text-muted">@item.Description</p>
-                        <p class="card-text fw-bold">$@item.Price</p>
+                        <p class="card-text fw-bold">$@item.Price.ToString("0.00")</p>
 
                         <button class="btn btn-outline-primary mt-auto" @onclick="() => ToggleCustomize(item.Id)">
                             @(selectedItemId == item.Id ? "Cancel" : "Customize")
@@ -44,7 +47,7 @@ else
 
                                 <input type="text" class="form-control mb-2" @bind="notes" placeholder="Special instructions" />
 
-                                <button class="btn btn-success w-100" @onclick="() => AddToOrder(item)">Add to Order</button>
+                                <button class="btn btn-success w-100" @onclick="() => AddToCart(item)">Add to Cart</button>
                             </div>
                         }
                     </div>
@@ -61,6 +64,11 @@ else
     private string notes = string.Empty;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadMenu();
+    }
+
+    private async Task LoadMenu()
     {
         try
         {
@@ -85,6 +93,8 @@ else
             quantity = 1;
             notes = string.Empty;
         }
+
+        StateHasChanged();
     }
 
     private void ChangeQuantity(int delta)
@@ -93,26 +103,24 @@ else
         if (quantity < 1) quantity = 1;
     }
 
-    private async Task AddToOrder(MenuItemDto item)
+    private void AddToCart(MenuItemDto item)
     {
-        var orderItem = new OrderItemCreateDto
+        var cartItem = new CartItemDto
         {
             MenuItemId = item.Id,
+            MenuItemName = item.Name,
+            Price = item.Price,
             Quantity = quantity,
             Customization = notes
         };
 
-        try
-        {
-            await Http.PostAsJsonAsync("api/Orders/additem", orderItem);
-            selectedItemId = -1;
-            quantity = 1;
-            notes = string.Empty;
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error adding item to order: {ex.Message}");
-        }
+        CartService.AddItem(cartItem);
+
+        // Reset UI
+        selectedItemId = -1;
+        quantity = 1;
+        notes = string.Empty;
+
+        Console.WriteLine($"Added {cartItem.Quantity}x {cartItem.MenuItemName} to cart.");
     }
 }
-

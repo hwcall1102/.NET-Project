@@ -1,0 +1,127 @@
+@page "/admin-order"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using TakeawayTitans.Data
+@using TakeawayTitans.Data.Models
+@using System.Linq
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+
+<PageTitle>Admin Order Management</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <div class="page">
+            <h1>Admin Order Management</h1>
+            @if (orders.Count == 0)
+            {
+                <p class="fs-1">No orders available.</p>
+            }
+            else
+            {
+                <div class="order-container">
+                <Tabs NavStyle="NavStyle.VerticalUnderline" Class="fs-4">
+                    <Tab Title="Received">
+                        <Content>
+                            @{
+                                var receivedOrders = GetOrdersByStatus(OrderStatus.Received).ToList();
+                            }
+                            @if (receivedOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are waiting to be acknowledged.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in receivedOrders)
+                                {
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="Preparing">
+                        <Content>
+                            @{
+                                var preparingOrders = GetOrdersByStatus(OrderStatus.Preparing).ToList();
+                            }
+                            @if (preparingOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are currently being prepared.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in preparingOrders)
+                                {
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="Ready">
+                        <Content>
+                            @{
+                                var readyOrders = GetOrdersByStatus(OrderStatus.Ready).ToList();
+                            }
+                            @if (readyOrders.Count == 0)
+                            {
+                                <p class="fs-5">No orders are ready for pickup.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in readyOrders)
+                                {
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                    <Tab Title="History">
+                        <Content>
+                            @{
+                                var historicalOrders = GetOrdersByStatus(OrderStatus.Completed, OrderStatus.Canceled).ToList();
+                            }
+                            @if (historicalOrders.Count == 0)
+                            {
+                                <p class="fs-5">No completed or canceled orders yet.</p>
+                            }
+                            else
+                            {
+                                foreach (var order in historicalOrders)
+                                {
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
+                                }
+                            }
+                        </Content>
+                    </Tab>
+                </Tabs>
+                </div>
+                @* <div class="order-container">
+                    @foreach (var order in orders)
+                    {
+                        <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
+                    }
+                </div> *@
+            }
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private TakeawayTitansContext dbContext = default!;
+    private readonly List<Order> orders = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dbContext = await DbFactory.CreateDbContextAsync();
+        var loadedOrders = await dbContext.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.MenuItem)
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
+
+        orders.AddRange(loadedOrders);
+    }
+
+    private Task HandleOrderUpdated(Order _) => InvokeAsync(StateHasChanged);
+
+    private IEnumerable<Order> GetOrdersByStatus(params OrderStatus[] statuses) =>
+        orders.Where(order => statuses.Contains(order.Status));
+}

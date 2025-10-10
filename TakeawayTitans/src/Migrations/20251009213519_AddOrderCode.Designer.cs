@@ -12,8 +12,8 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    [Migration("20251003042848_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251009213519_AddOrderCode")]
+    partial class AddOrderCode
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 1,
                             Description = "Crisp romaine with Caesar dressing.",
-                            ImageUrl = "https://example.com/caesar-salad.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/8251537/pexels-photo-8251537.jpeg",
                             Name = "Caesar Salad",
                             Price = 7.25m
                         },
@@ -68,7 +68,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 2,
                             Description = "Tomatoes, cucumbers, feta, and olives.",
-                            ImageUrl = "https://example.com/greek-salad.jpg",
+                            ImageUrl = "https://www.cookipedia.co.uk/wiki/images/8/87/Greek_salad_recipe.jpg",
                             Name = "Greek Salad",
                             Price = 7.50m
                         },
@@ -76,7 +76,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 3,
                             Description = "Fresh mixed greens with seasonal veggies.",
-                            ImageUrl = "https://example.com/garden-salad.jpg",
+                            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmzYDNf1qIDSjvZLHCi98piiao6gi6K7ZIyw&s",
                             Name = "Garden Salad",
                             Price = 6.99m
                         },
@@ -84,7 +84,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 4,
                             Description = "Baby spinach, strawberries, and almonds.",
-                            ImageUrl = "https://example.com/spinach-salad.jpg",
+                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c4/Salad_with_strawberries.jpg",
                             Name = "Spinach Salad",
                             Price = 7.75m
                         },
@@ -92,7 +92,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 5,
                             Description = "Chicken, bacon, avocado, egg, and blue cheese.",
-                            ImageUrl = "https://example.com/cobb-salad.jpg",
+                            ImageUrl = "https://images.stockcake.com/public/6/f/6/6f6293cf-b710-40e3-b0c6-af329f49c182/hearty-cobb-salad-stockcake.jpg",
                             Name = "Cobb Salad",
                             Price = 8.50m
                         },
@@ -100,7 +100,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 6,
                             Description = "Fresh strawberries blended with yogurt.",
-                            ImageUrl = "https://example.com/strawberry-smoothie.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/8169597/pexels-photo-8169597.jpeg",
                             Name = "Strawberry Smoothie",
                             Price = 5.50m
                         },
@@ -108,7 +108,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 7,
                             Description = "Ripe mangoes with orange juice.",
-                            ImageUrl = "https://example.com/mango-smoothie.jpg",
+                            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEg03LIorRnJYimTc6rQ0rLUd_B9RrKp0GnA&s",
                             Name = "Mango Smoothie",
                             Price = 5.75m
                         },
@@ -116,7 +116,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 8,
                             Description = "Banana, milk, and honey.",
-                            ImageUrl = "https://example.com/banana-smoothie.jpg",
+                            ImageUrl = "https://images.rawpixel.com/image_social_landscape/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvaXMxMTA0NS1pbWFnZS1rd3lzaTYwZC5qcGc.jpg",
                             Name = "Banana Smoothie",
                             Price = 5.25m
                         },
@@ -124,7 +124,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 9,
                             Description = "Spinach, kale, apple, and banana.",
-                            ImageUrl = "https://example.com/green-smoothie.jpg",
+                            ImageUrl = "https://i1.pickpik.com/photos/153/22/476/green-smoothie-drink-healthy-preview.jpg",
                             Name = "Green Smoothie",
                             Price = 6.00m
                         },
@@ -132,7 +132,7 @@ namespace TakeawayTitans.Migrations
                         {
                             Id = 10,
                             Description = "Mixed berries blended with yogurt.",
-                            ImageUrl = "https://example.com/berry-blast-smoothie.jpg",
+                            ImageUrl = "https://i1.pickpik.com/photos/585/986/375/smoothie-milkshake-mixed-berry-preview.jpg",
                             Name = "Berry Blast Smoothie",
                             Price = 6.25m
                         });
@@ -146,29 +146,116 @@ namespace TakeawayTitans.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
 
+                    b.Property<DateTime?>("CanceledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("CustomerEmail")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("CustomerName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("CustomerPhone")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("OrderCode")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)");
+
+                    b.Property<DateTime?>("PreparingAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ReadyAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Status")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Received");
 
                     b.HasKey("OrderId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            CreatedAt = new DateTime(2025, 10, 3, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CustomerEmail = "morgan.park@example.com",
+                            CustomerName = "Morgan Park",
+                            CustomerPhone = "555-0912",
+                            OrderCode = "4821",
+                            ReceivedAt = new DateTime(2025, 10, 3, 10, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Received"
+                        },
+                        new
+                        {
+                            OrderId = 2,
+                            CreatedAt = new DateTime(2025, 10, 1, 15, 30, 0, 0, DateTimeKind.Utc),
+                            CustomerEmail = "jamie.johnson@example.com",
+                            CustomerName = "Jamie Johnson",
+                            CustomerPhone = "555-0134",
+                            OrderCode = "1734",
+                            PreparingAt = new DateTime(2025, 10, 1, 15, 30, 0, 0, DateTimeKind.Utc),
+                            ReceivedAt = new DateTime(2025, 10, 1, 15, 15, 0, 0, DateTimeKind.Utc),
+                            Status = "Preparing"
+                        },
+                        new
+                        {
+                            OrderId = 3,
+                            CreatedAt = new DateTime(2025, 10, 2, 11, 15, 0, 0, DateTimeKind.Utc),
+                            CustomerEmail = "taylor.nguyen@example.com",
+                            CustomerName = "Taylor Nguyen",
+                            CustomerPhone = "555-0456",
+                            OrderCode = "9056",
+                            PreparingAt = new DateTime(2025, 10, 2, 11, 5, 0, 0, DateTimeKind.Utc),
+                            ReadyAt = new DateTime(2025, 10, 2, 11, 15, 0, 0, DateTimeKind.Utc),
+                            ReceivedAt = new DateTime(2025, 10, 2, 11, 0, 0, 0, DateTimeKind.Utc),
+                            Status = "Ready"
+                        },
+                        new
+                        {
+                            OrderId = 4,
+                            CompletedAt = new DateTime(2025, 10, 3, 11, 30, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2025, 10, 3, 11, 30, 0, 0, DateTimeKind.Utc),
+                            CustomerEmail = "riley.santos@example.com",
+                            CustomerName = "Riley Santos",
+                            CustomerPhone = "555-0933",
+                            OrderCode = "6243",
+                            PreparingAt = new DateTime(2025, 10, 3, 11, 15, 0, 0, DateTimeKind.Utc),
+                            ReadyAt = new DateTime(2025, 10, 3, 11, 25, 0, 0, DateTimeKind.Utc),
+                            ReceivedAt = new DateTime(2025, 10, 3, 11, 10, 0, 0, DateTimeKind.Utc),
+                            Status = "Completed"
+                        },
+                        new
+                        {
+                            OrderId = 5,
+                            CanceledAt = new DateTime(2025, 10, 3, 12, 45, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2025, 10, 3, 12, 45, 0, 0, DateTimeKind.Utc),
+                            CustomerEmail = "jordan.lee@example.com",
+                            CustomerName = "Jordan Lee",
+                            CustomerPhone = "555-0977",
+                            OrderCode = "2189",
+                            PreparingAt = new DateTime(2025, 10, 3, 12, 35, 0, 0, DateTimeKind.Utc),
+                            ReceivedAt = new DateTime(2025, 10, 3, 12, 30, 0, 0, DateTimeKind.Utc),
+                            Status = "Canceled"
+                        });
                 });
 
             modelBuilder.Entity("TakeawayTitans.Data.Models.OrderItem", b =>
@@ -180,7 +267,8 @@ namespace TakeawayTitans.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Customization")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("MenuItemId")
                         .HasColumnType("integer");
@@ -198,9 +286,89 @@ namespace TakeawayTitans.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Customization = "No croutons",
+                            MenuItemId = 1,
+                            OrderId = 1,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Customization = "Extra strawberries",
+                            MenuItemId = 6,
+                            OrderId = 1,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Customization = "Add grilled chicken",
+                            MenuItemId = 4,
+                            OrderId = 2,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            MenuItemId = 9,
+                            OrderId = 2,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Customization = "Light dressing",
+                            MenuItemId = 1,
+                            OrderId = 3,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            MenuItemId = 9,
+                            OrderId = 3,
+                            Quantity = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Customization = "No onions",
+                            MenuItemId = 4,
+                            OrderId = 4,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Customization = "Extra strawberries",
+                            MenuItemId = 6,
+                            OrderId = 4,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Customization = "No croutons",
+                            MenuItemId = 1,
+                            OrderId = 5,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Customization = "Add grilled chicken",
+                            MenuItemId = 4,
+                            OrderId = 5,
+                            Quantity = 2
+                        });
                 });
 
-            modelBuilder.Entity("TakeawayTitans.Models.User", b =>
+            modelBuilder.Entity("TakeawayTitans.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,56 +408,56 @@ namespace TakeawayTitans.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8160),
+                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5000),
                             Email = "test@gmail.com",
                             FirstName = "Test",
                             ImageUrl = "https://picsum.photos/id/64/200",
                             LastName = "User",
-                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
                             Role = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8170),
+                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5000),
                             Email = "alice.johnson@example.com",
                             FirstName = "Alice",
                             ImageUrl = "https://picsum.photos/id/101/200",
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
                             Role = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8200),
+                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5010),
                             Email = "bob.smith@example.com",
                             FirstName = "Bob",
                             ImageUrl = "https://picsum.photos/id/102/200",
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
                             Role = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8220),
+                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5010),
                             Email = "carol.davis@example.com",
                             FirstName = "Carol",
                             ImageUrl = "https://picsum.photos/id/103/200",
                             LastName = "Davis",
-                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
                             Role = 0
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 10, 3, 4, 28, 47, 252, DateTimeKind.Utc).AddTicks(8230),
+                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5020),
                             Email = "david.martinez@example.com",
                             FirstName = "David",
                             ImageUrl = "https://picsum.photos/id/104/200",
                             LastName = "Martinez",
-                            PasswordHash = "$2a$11$QYa1hVfrQZqG6p84ErmlIOzjgBRr8D.Y1OmGzPCQGpOZB6au55e3e",
+                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
                             Role = 0
                         });
                 });

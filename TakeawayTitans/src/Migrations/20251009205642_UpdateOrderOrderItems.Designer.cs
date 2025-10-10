@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TakeawayTitans.Data;
@@ -11,9 +12,11 @@ using TakeawayTitans.Data;
 namespace TakeawayTitans.Migrations
 {
     [DbContext(typeof(TakeawayTitansContext))]
-    partial class TakeawayTitansContextModelSnapshot : ModelSnapshot
+    [Migration("20251009205642_UpdateOrderOrderItems")]
+    partial class UpdateOrderOrderItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,11 +167,6 @@ namespace TakeawayTitans.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("OrderCode")
-                        .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("character varying(4)");
-
                     b.Property<DateTime?>("PreparingAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -197,7 +195,6 @@ namespace TakeawayTitans.Migrations
                             CustomerEmail = "morgan.park@example.com",
                             CustomerName = "Morgan Park",
                             CustomerPhone = "555-0912",
-                            OrderCode = "4821",
                             ReceivedAt = new DateTime(2025, 10, 3, 10, 0, 0, 0, DateTimeKind.Utc),
                             Status = "Received"
                         },
@@ -208,7 +205,6 @@ namespace TakeawayTitans.Migrations
                             CustomerEmail = "jamie.johnson@example.com",
                             CustomerName = "Jamie Johnson",
                             CustomerPhone = "555-0134",
-                            OrderCode = "1734",
                             PreparingAt = new DateTime(2025, 10, 1, 15, 30, 0, 0, DateTimeKind.Utc),
                             ReceivedAt = new DateTime(2025, 10, 1, 15, 15, 0, 0, DateTimeKind.Utc),
                             Status = "Preparing"
@@ -220,7 +216,6 @@ namespace TakeawayTitans.Migrations
                             CustomerEmail = "taylor.nguyen@example.com",
                             CustomerName = "Taylor Nguyen",
                             CustomerPhone = "555-0456",
-                            OrderCode = "9056",
                             PreparingAt = new DateTime(2025, 10, 2, 11, 5, 0, 0, DateTimeKind.Utc),
                             ReadyAt = new DateTime(2025, 10, 2, 11, 15, 0, 0, DateTimeKind.Utc),
                             ReceivedAt = new DateTime(2025, 10, 2, 11, 0, 0, 0, DateTimeKind.Utc),
@@ -234,7 +229,6 @@ namespace TakeawayTitans.Migrations
                             CustomerEmail = "riley.santos@example.com",
                             CustomerName = "Riley Santos",
                             CustomerPhone = "555-0933",
-                            OrderCode = "6243",
                             PreparingAt = new DateTime(2025, 10, 3, 11, 15, 0, 0, DateTimeKind.Utc),
                             ReadyAt = new DateTime(2025, 10, 3, 11, 25, 0, 0, DateTimeKind.Utc),
                             ReceivedAt = new DateTime(2025, 10, 3, 11, 10, 0, 0, DateTimeKind.Utc),
@@ -248,7 +242,6 @@ namespace TakeawayTitans.Migrations
                             CustomerEmail = "jordan.lee@example.com",
                             CustomerName = "Jordan Lee",
                             CustomerPhone = "555-0977",
-                            OrderCode = "2189",
                             PreparingAt = new DateTime(2025, 10, 3, 12, 35, 0, 0, DateTimeKind.Utc),
                             ReceivedAt = new DateTime(2025, 10, 3, 12, 30, 0, 0, DateTimeKind.Utc),
                             Status = "Canceled"
@@ -405,56 +398,56 @@ namespace TakeawayTitans.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5000),
+                            CreatedAt = new DateTime(2025, 10, 9, 20, 56, 41, 848, DateTimeKind.Utc).AddTicks(140),
                             Email = "test@gmail.com",
                             FirstName = "Test",
                             ImageUrl = "https://picsum.photos/id/64/200",
                             LastName = "User",
-                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
+                            PasswordHash = "$2a$11$e6NGDp1tYhMxmAJOyqgl2eIG5WSYdESXpLFFlrMvvHWCIsGItW/6W",
                             Role = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5000),
+                            CreatedAt = new DateTime(2025, 10, 9, 20, 56, 41, 848, DateTimeKind.Utc).AddTicks(150),
                             Email = "alice.johnson@example.com",
                             FirstName = "Alice",
                             ImageUrl = "https://picsum.photos/id/101/200",
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
+                            PasswordHash = "$2a$11$e6NGDp1tYhMxmAJOyqgl2eIG5WSYdESXpLFFlrMvvHWCIsGItW/6W",
                             Role = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5010),
+                            CreatedAt = new DateTime(2025, 10, 9, 20, 56, 41, 848, DateTimeKind.Utc).AddTicks(150),
                             Email = "bob.smith@example.com",
                             FirstName = "Bob",
                             ImageUrl = "https://picsum.photos/id/102/200",
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
+                            PasswordHash = "$2a$11$e6NGDp1tYhMxmAJOyqgl2eIG5WSYdESXpLFFlrMvvHWCIsGItW/6W",
                             Role = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5010),
+                            CreatedAt = new DateTime(2025, 10, 9, 20, 56, 41, 848, DateTimeKind.Utc).AddTicks(150),
                             Email = "carol.davis@example.com",
                             FirstName = "Carol",
                             ImageUrl = "https://picsum.photos/id/103/200",
                             LastName = "Davis",
-                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
+                            PasswordHash = "$2a$11$e6NGDp1tYhMxmAJOyqgl2eIG5WSYdESXpLFFlrMvvHWCIsGItW/6W",
                             Role = 0
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 10, 9, 21, 35, 18, 928, DateTimeKind.Utc).AddTicks(5020),
+                            CreatedAt = new DateTime(2025, 10, 9, 20, 56, 41, 848, DateTimeKind.Utc).AddTicks(160),
                             Email = "david.martinez@example.com",
                             FirstName = "David",
                             ImageUrl = "https://picsum.photos/id/104/200",
                             LastName = "Martinez",
-                            PasswordHash = "$2a$11$zn/p2depDN/E3UmHU.ZK6ua9K5rxSiSDXyi1UerVx.IW5yYQT.AOe",
+                            PasswordHash = "$2a$11$e6NGDp1tYhMxmAJOyqgl2eIG5WSYdESXpLFFlrMvvHWCIsGItW/6W",
                             Role = 0
                         });
                 });
