@@ -1,0 +1,48 @@
+/* MenuItems.razor.css */
+
+.page {
+  padding: 2rem;
+}
+
+/* make just the danger button a bit more compact (this page only) */
+.page .btn-danger {
+  /* keep all the same colors; only shrink size via Bootstrap 5.3 vars */
+  --bs-btn-padding-y: .35rem;   /* default ~.375rem */
+  --bs-btn-padding-x: .6rem;    /* default ~.75rem  */
+  --bs-btn-font-size: .9rem;    /* default 1rem     */
+}
+
+.page .btn-outline-secondary {
+  --bs-btn-color: #198754; /* soft green text */
+  --bs-btn-border-color: #198754;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #198754;
+  --bs-btn-hover-border-color: #157347;
+  --bs-btn-active-bg: #157347;
+  --bs-btn-active-border-color: #146c43;
+  --bs-btn-font-weight: 500;
+}
+/* small gap between Edit and Delete buttons */
+.page .text-end .btn + .btn {
+  margin-left: .5rem;
+}
+
+/* optional: make table rows a little tighter but still readable */
+.page table.table > :not(caption) > * > * {
+  padding-top: .55rem;
+  padding-bottom: .55rem;
+}
+
+/* optional: round images consistently (you already set inline styles) */
+.page img {
+  border-radius: 6px;
+}
+
+/* optional: space the top toolbar a touch on narrow screens */
+@media (max-width: 576px) {
+  .page .d-flex.align-items-center.gap-2 {
+    row-gap: .5rem;
+    flex-wrap: wrap;
+  }
+  .page .ms-auto { width: 100%; }
+}

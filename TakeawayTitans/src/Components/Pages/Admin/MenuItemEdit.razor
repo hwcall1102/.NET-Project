@@ -1,87 +1,106 @@
 @page "/admin/menu/edit/{Id:int}"
-@using TakeawayTitans.Data
-@using TakeawayTitans.Data.Models
-@inject IDbContextFactory<TakeawayTitansContext> DbFactory
-@inject NavigationManager Nav
 @using Microsoft.EntityFrameworkCore
-@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@using TakeawayTitans.Data.Models
+@using TakeawayTitans.Data
+@inject IDbContextFactory<TakeawayTitans.Data.TakeawayTitansContext> DbFactory
+@inject NavigationManager NavigationManager
 
-<PageTitle>Edit Menu Item</PageTitle>
+<PageTitle>Edit</PageTitle>
 
-<div class="page">
-    <h3>Edit Menu Item</h3>
+<h1>Edit</h1>
 
-    @if (_model is null)
-    {
-        <p>Loading…</p>
-    }
-    else
-    {
-        <EditForm Model="_model" OnValidSubmit="SaveAsync">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-            <div class="mb-2">
-                <label class="form-label">Name</label>
-                <InputText class="form-control" @bind-Value="_model.Name" />
+<h2>MenuItem</h2>
+<hr />
+@if (MenuItem is null)
+{
+            <p><em>Loading...</em></p>
+}
+else
+{
+            <div class="row">
+                <div class="col-md-4">
+                    <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary role="alert"/>
+                        <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Name" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price:</label>
+                            <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Price" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.Description" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageurl" class="form-label">ImageUrl:</label>
+                            <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" />
+                            <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </EditForm>
+                </div>
             </div>
+}
 
-            <div class="mb-2">
-                <label class="form-label">Price</label>
-                <InputNumber class="form-control" @bind-Value="_model.Price" />
-            </div>
-
-            <div class="mb-2">
-                <label class="form-label">Description</label>
-                <InputTextArea class="form-control" @bind-Value="_model.Description" />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Image URL</label>
-                <InputText class="form-control" @bind-Value="_model.ImageUrl" />
-            </div>
-
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary" type="submit">Save</button>
-                <button class="btn btn-outline-danger" type="button" @onclick="DeleteAsync">Delete</button>
-                <button class="btn btn-secondary" type="button" @onclick='() => Nav.NavigateTo("/admin/menu")'>Back</button>
-            </div>
-        </EditForm>
-    }
+<div>
+    <a href="/menuitems">Back to List</a>
 </div>
 
 @code {
-    [Parameter] public int Id { get; set; }
-    private MenuItem? _model;
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    [SupplyParameterFromForm]
+    private MenuItem? MenuItem { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        await using var db = await DbFactory.CreateDbContextAsync();
-        _model = await db.MenuItems.FirstOrDefaultAsync(m => m.Id == Id);
-    }
+        using var context = DbFactory.CreateDbContext();
+        MenuItem ??= await context.MenuItems.FirstOrDefaultAsync(m => m.Id == Id);
 
-    // Updating an existing item
-    private async Task SaveAsync()
-    {
-        if (_model is null) return;
-
-        await using var db = await DbFactory.CreateDbContextAsync();
-        
-        db.Attach(_model).State = EntityState.Modified;
-        
-        await db.SaveChangesAsync();
-        Nav.NavigateTo("/admin/menu");
-    }
-
-    private async Task DeleteAsync()
-    {
-        await using var db = await DbFactory.CreateDbContextAsync();
-        var entity = await db.MenuItems.FindAsync(Id);
-        if (entity is not null)
+        if (MenuItem is null)
         {
-            db.MenuItems.Remove(entity);
-            await db.SaveChangesAsync();
+            NavigationManager.NavigateTo("notfound");
         }
-        Nav.NavigateTo("/admin/menu");
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateMenuItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(MenuItem!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MenuItemExists(MenuItem!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/menuitems");
+    }
+
+    private bool MenuItemExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.MenuItems.Any(e => e.Id == id);
     }
 }
+

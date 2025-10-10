@@ -1,0 +1,24 @@
+.page { padding: 2rem 2rem 3rem; }
+
+/* center + constrain */
+.page > * { max-width: 900px; margin-left: auto; margin-right: auto; }
+.page .row { margin-left: 0; margin-right: 0; }
+
+.page h1 { margin-bottom: .25rem; }
+.page p { margin-bottom: 2rem; }
+.page hr { margin: .75rem 0 1.5rem; border-color: #dee2e6; }
+
+/* definition list readability */
+.page dl.row { margin-bottom: .75rem; }
+.page dt { color: #6c757d; font-weight: 600; }
+
+
+.page .btn-danger {
+  --bs-btn-padding-y: .35rem;
+  --bs-btn-padding-x: .75rem;
+  --bs-btn-font-size: .9rem;
+  border-radius: .5rem;
+}
+
+/* space between actions */
+.page .btn + a, .page .btn + .btn { margin-left: .75rem; }
