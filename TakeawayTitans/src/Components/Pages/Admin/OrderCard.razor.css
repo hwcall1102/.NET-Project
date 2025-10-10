@@ -1,0 +1,60 @@
+.order-card {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+.order-code {
+    background-color: var(--amber);
+    color: white;
+    cursor: pointer;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+.order-collapse {
+    padding-left: 10px;
+}
+.order-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.order-detail-item-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.order-detail-image {
+    width: 100px;
+    border-radius: 20px;
+}
+.order-detail-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+.order-detail-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.order-status-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.button {
+    border-radius: 10px;
+    border: none;
+    width: 100px;
+    background-color: var(--bs-gray-400);
+    color: var(--bs-dark);
+    cursor: pointer;
+}
+
+.button:disabled {
+    cursor: default;
+}
+
+.button.is-active {
+    background-color: var(--amber);
+    color: white;
+}

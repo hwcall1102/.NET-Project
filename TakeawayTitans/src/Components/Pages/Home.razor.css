@@ -1,25 +1,30 @@
 .page {
     padding: var(--page-padding);
-    min-height: var(--body-height);
+    height: var(--body-height);
     display: flex;
     justify-content: center;
 }
 .hero-container {
     position: relative;
     width: min(90vw, 960px);
-    height: 70vh;
+    height: inherit;
+    overflow: auto;
+    background-image: url("landing-image.webp");
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+}
+.hero-list {
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
 }
 
-.hero-background {
-    display: block;
-    width: 100%;
-    height: 100%;
-    margin: 1rem auto;
-    object-fit: cover;
-    border-radius: 24px;
-    box-shadow: 0 20px 45px rgba(32, 77, 67, 0.35);
+.hero-logo-container {
+    display: flex;
+    justify-content: center;
 }
 .hero-logo {
-    position: absolute;
-    inset: 2rem;
+    width: 20%;
+    height: auto;
 }

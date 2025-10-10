@@ -1,18 +1,61 @@
 @page "/admin-dashboard"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
 
 <PageTitle>Admin Dashboard</PageTitle>
 <div class="page">
-    Admin Dashboard
-    <AuthorizeView>
-        <Authorized>
-            <p>Authorized User</p>
-        </Authorized>
-        <NotAuthorized>
-            <p>Not Authorized User</p>
-        </NotAuthorized>
-    </AuthorizeView>
+    <div>
+        <AuthorizeView>
+            <Authorized Context="auth">
+                <h1>
+                    <iconify-icon icon="la:tools" width="32" height="32" />
+                    Admin Dashboard 
+                    <span class="user">
+                        (@auth.User.Identity?.Name)
+                    </span>
+                </h1>
+                <div class="button-container">
+                    <button type="button" class="button" @onclick="GoToOrder">
+                        <div>
+                            <iconify-icon icon="lets-icons:order-duotone-line" width="40" height="40" />
+                            <p>See Orders</p>
+                        </div>
+                    </button>
+                    <button type="button" class="button" @onclick="GoToMenu">
+                        <div>
+                            <iconify-icon icon="ic:twotone-menu-book" width="40" height="40" />
+                            <p>Manage Menu</p>
+                        </div>
+                    </button>
+                    <button type="button" class="button" @onclick="GoToProfile" disabled>
+                        <div>
+                            <iconify-icon icon="iconamoon:profile-duotone" width="40" height="40" />
+                            <p>Manage Profile</p>
+                        </div>
+                    </button>
+
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <p>Not Authorized User</p>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
 </div>
 
 @code {
-    
+    void GoToOrder()
+    {
+        Navigation.NavigateTo("/admin-order");
+    }
+
+    void GoToMenu()
+    {
+        Navigation.NavigateTo("/admin-menu");
+    }
+
+    void GoToProfile()
+    {
+        Navigation.NavigateTo("/admin-profile");
+    }
 }
