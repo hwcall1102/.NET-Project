@@ -61,6 +61,11 @@ else
     </div>
 }
 
+<!-- Floating Cart Button -->
+<button class="btn go-to-cart fw-bold" @onclick="GoToCart">
+    Review Order (@CartService.CartItems.Sum(i => i.Quantity))
+</button>
+
 @code {
     private List<MenuItemDto>? menuItems;
     private int selectedItemId = -1;
@@ -138,4 +143,33 @@ else
         quantity = 1;
         notes = string.Empty;
     }
+    private void GoToCart()
+    {
+        Navigation.NavigateTo("/order");
+    }
 }
+
+<style>
+    .go-to-cart {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        padding: 12px 20px;
+        border-radius: 50px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        background-color: #198754;   /* match btn-success */
+        color: white;
+        font-weight: bold;
+        border: none;
+        margin: 0;
+    }
+
+    .go-to-cart:hover {
+        background-color: #157347;   /* match btn-success hover */
+        transform: translateX(-50%) scale(1.05);
+        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+</style>
+
