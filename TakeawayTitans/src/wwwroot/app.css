@@ -12,6 +12,8 @@
     --body-height: calc(100vh - var(--nav-height) - var(--footer-height))
 }
 
-body {
+html, body {
     font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
 }

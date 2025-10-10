@@ -1,4 +1,7 @@
+@using Microsoft.EntityFrameworkCore
+@using TakeawayTitans.Data
 @using TakeawayTitans.Data.Models
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
 <div class="order-card">
     <p @onclick="ToggleCollapse" class="order-code fs-3">
         Order Code: @Order.OrderCode
@@ -6,7 +9,7 @@
     <div class="order-collapse">
         <Collapse @ref="collapse">
             <p class="fs-2 fw-bold">@Order.CustomerName</p>
-            <p class="fs-5">@Order.CustomerEmail</p>
+            <p class="fs-5 text-break">@Order.CustomerEmail</p>
             <p class="fs-5">Phone: @Order.CustomerPhone</p>
             <p class="fs-3">Order Details</p>
             <div class="order-detail-container">
@@ -37,11 +40,11 @@
             </div>
             <div class="order-status-container">
                 @* <span class="fs-3">Status: </span> *@
-                <button class="@GetStatusClass(OrderStatus.Received)" disabled="@IsStatusDisabled(OrderStatus.Received)">Received</button>
-                <button class="@GetStatusClass(OrderStatus.Preparing)" disabled="@IsStatusDisabled(OrderStatus.Preparing)">Preparing</button>
-                <button class="@GetStatusClass(OrderStatus.Ready)" disabled="@IsStatusDisabled(OrderStatus.Ready)">Ready</button>
-                <button class="@GetStatusClass(OrderStatus.Completed)" disabled="@IsStatusDisabled(OrderStatus.Completed)">Completed</button>
-                <button class="@GetStatusClass(OrderStatus.Canceled)" disabled="@IsStatusDisabled(OrderStatus.Canceled)">Canceled</button>
+                <button class="@GetStatusClass(OrderStatus.Received)" disabled="@IsStatusDisabled(OrderStatus.Received)" @onclick="AdvanceStatusAsync">Received</button>
+                <button class="@GetStatusClass(OrderStatus.Preparing)" disabled="@IsStatusDisabled(OrderStatus.Preparing)" @onclick="AdvanceStatusAsync">Preparing</button>
+                <button class="@GetStatusClass(OrderStatus.Ready)" disabled="@IsStatusDisabled(OrderStatus.Ready)" @onclick="AdvanceStatusAsync">Ready</button>
+                <button class="@GetStatusClass(OrderStatus.Completed)" disabled="@IsStatusDisabled(OrderStatus.Completed)" @onclick="AdvanceStatusAsync">Completed</button>
+                <button class="@GetStatusClass(OrderStatus.Canceled)" disabled="@IsStatusDisabled(OrderStatus.Canceled)" @onclick="AdvanceStatusAsync">Canceled</button>
             </div>
         </Collapse>
     </div>
@@ -52,7 +55,13 @@
 @code {
     [Parameter]
     public Order Order {get; set;} = default!;
+
+    [Parameter]
+    public EventCallback<Order> OrderUpdated { get; set; }
+
     private Collapse collapse = default!;
+    private bool isUpdating;
+
     private async Task ToggleCollapse() => await collapse.ToggleAsync();
     private decimal Total => Order.OrderItems.Sum(i => i.MenuItem.Price * i.Quantity);
 
@@ -66,6 +75,11 @@
 
     private bool IsStatusDisabled(OrderStatus status)
     {
+        if (isUpdating)
+        {
+            return true;
+        }
+
         var enabledStatus = GetEnabledStatus();
         return !enabledStatus.HasValue || enabledStatus != status;
     }
@@ -78,6 +92,63 @@
             OrderStatus.Ready => OrderStatus.Completed,
             _ => null
         };
+
+    private async Task AdvanceStatusAsync()
+    {
+        if (isUpdating)
+        {
+            return;
+        }
+
+        var nextStatus = GetEnabledStatus();
+
+        if (!nextStatus.HasValue)
+        {
+            return;
+        }
+
+        isUpdating = true;
+
+        Order? orderToNotify = null;
+
+        try
+        {
+            await using var context = await DbFactory.CreateDbContextAsync();
+            var orderInDb = await context.Orders.FirstOrDefaultAsync(o => o.OrderId == Order.OrderId);
+
+            if (orderInDb is not null)
+            {
+                if (orderInDb.Status == Order.Status)
+                {
+                    orderInDb.Status = nextStatus.Value;
+                    await context.SaveChangesAsync();
+                }
+
+                ApplyOrderUpdates(orderInDb);
+                orderToNotify = Order;
+            }
+        }
+        finally
+        {
+            isUpdating = false;
+        }
+
+        if (orderToNotify is not null)
+        {
+            await InvokeAsync(StateHasChanged);
+            await OrderUpdated.InvokeAsync(orderToNotify);
+        }
+    }
+
+    private void ApplyOrderUpdates(Order source)
+    {
+        Order.Status = source.Status;
+        Order.ReceivedAt = source.ReceivedAt;
+        Order.PreparingAt = source.PreparingAt;
+        Order.ReadyAt = source.ReadyAt;
+        Order.CompletedAt = source.CompletedAt;
+        Order.CanceledAt = source.CanceledAt;
+    }
 
     private static string FormatTimestamp(DateTime? timestamp)
     {
