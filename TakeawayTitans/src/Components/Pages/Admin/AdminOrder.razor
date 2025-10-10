@@ -32,7 +32,7 @@
                             {
                                 foreach (var order in receivedOrders)
                                 {
-                                    <OrderCard Order="order" />
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
                                 }
                             }
                         </Content>
@@ -50,7 +50,7 @@
                             {
                                 foreach (var order in preparingOrders)
                                 {
-                                    <OrderCard Order="order" />
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
                                 }
                             }
                         </Content>
@@ -68,7 +68,7 @@
                             {
                                 foreach (var order in readyOrders)
                                 {
-                                    <OrderCard Order="order" />
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
                                 }
                             }
                         </Content>
@@ -86,7 +86,7 @@
                             {
                                 foreach (var order in historicalOrders)
                                 {
-                                    <OrderCard Order="order" />
+                                    <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
                                 }
                             }
                         </Content>
@@ -96,7 +96,7 @@
                 @* <div class="order-container">
                     @foreach (var order in orders)
                     {
-                        <OrderCard Order="order" />
+                        <OrderCard Order="order" OrderUpdated="HandleOrderUpdated" />
                     }
                 </div> *@
             }
@@ -119,6 +119,8 @@
 
         orders.AddRange(loadedOrders);
     }
+
+    private Task HandleOrderUpdated(Order _) => InvokeAsync(StateHasChanged);
 
     private IEnumerable<Order> GetOrdersByStatus(params OrderStatus[] statuses) =>
         orders.Where(order => statuses.Contains(order.Status));
