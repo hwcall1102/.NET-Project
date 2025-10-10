@@ -1,0 +1,6 @@
+.row {
+    padding: var(--page-padding);
+    min-height: var(--body-height);
+    display: flex;
+    flex-direction: column;
+}
