@@ -1,0 +1,95 @@
+@page "/track"
+@using Microsoft.EntityFrameworkCore
+@using TakeawayTitans.Data
+@rendermode InteractiveServer
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Track My Order</PageTitle>
+<div class="page">
+    <p class="fs-1 fw-bold">Track My Order</p>
+    <EditForm Model="TrackingOrder" OnValidSubmit="HandleTrackingOrder">
+        <DataAnnotationsValidator />
+        @if (errorMessage is not null)
+        {
+            <div class="text-danger">@errorMessage</div>
+        }
+        <div class="form-group">
+            <label>Email: <span class="text-danger">*</span></label>
+            <div>
+                <TextInput @bind-Value="TrackingOrder.Email" Placeholder="Enter email address" class="fs-4" />
+                <ValidationMessage For="() => TrackingOrder.Email" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Order Code: <span class="text-danger">*</span></label>
+            <div>
+                <TextInput @bind-Value="TrackingOrder.OrderCode" Placeholder="Enter 4-digit order code" class="fs-4" />
+                <ValidationMessage For="() => TrackingOrder.OrderCode" />
+            </div>
+        </div>
+        <div class="row">
+            <Button Type="ButtonType.Button" @onclick="ResetForm" class="button btn-reset fs-4" Disabled=isLoading>Reset</Button>
+            <Button Type="ButtonType.Submit" class="button btn-login fs-4">
+                Track My Order
+                @if (isLoading)
+                {
+                    <Spinner />
+                }
+            </Button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private TrackModel TrackingOrder {get; set;} = new ();
+    private string? errorMessage = string.Empty;
+    private bool isLoading = false;
+    private async Task HandleTrackingOrder()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+        try {
+            var email = TrackingOrder.Email?.Trim();
+            var orderCode = TrackingOrder.OrderCode?.Trim();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(orderCode))
+            {
+                errorMessage = "Email and order code are required.";
+                return;
+            }
+
+            await using var dbContext = await DbFactory.CreateDbContextAsync();
+            var order = await dbContext.Orders
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o =>
+                    o.CustomerEmail != null &&
+                    EF.Functions.ILike(o.CustomerEmail, email) &&
+                    o.OrderCode == orderCode);
+
+            if (order is null)
+            {
+                errorMessage = "We couldn't find an order with that email and order code.";
+                return;
+            }
+
+            Navigation.NavigateTo($"/track-order-{order.OrderId}");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ResetForm()
+    {
+        TrackingOrder = new();
+        errorMessage = string.Empty;
+        StateHasChanged();
+    }
+}

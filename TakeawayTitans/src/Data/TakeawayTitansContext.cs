@@ -101,7 +101,171 @@ namespace TakeawayTitans.Data
                 }
             );
 
-            // Orders and OrderItems are intentionally left empty
+            modelBuilder.Entity<Order>()
+                .Property(o => o.OrderCode)
+                .HasMaxLength(4)
+                .IsRequired();
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>()
+                .HasMaxLength(20)
+                .HasDefaultValue(OrderStatus.Received);
+
+            // Seed demo Orders
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    OrderId = 1,
+                    OrderCode = "4821",
+                    CustomerName = "Morgan Park",
+                    CustomerPhone = "555-0912",
+                    CustomerEmail = "morgan.park@example.com",
+                    Status = OrderStatus.Received,
+                    CreatedAt = new DateTime(2025, 10, 3, 10, 00, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 10, 00, 0, DateTimeKind.Utc),
+                },
+                new Order
+                {
+                    OrderId = 2,
+                    OrderCode = "1734",
+                    CustomerName = "Jamie Johnson",
+                    CustomerPhone = "555-0134",
+                    CustomerEmail = "jamie.johnson@example.com",
+                    Status = OrderStatus.Preparing,
+                    CreatedAt = new DateTime(2025, 10, 1, 15, 30, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 1, 15, 15, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 1, 15, 30, 0, DateTimeKind.Utc),
+                },
+                new Order
+                {
+                    OrderId = 3,
+                    OrderCode = "9056",
+                    CustomerName = "Taylor Nguyen",
+                    CustomerPhone = "555-0456",
+                    CustomerEmail = "taylor.nguyen@example.com",
+                    Status = OrderStatus.Ready,
+                    CreatedAt = new DateTime(2025, 10, 2, 11, 15, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 2, 11, 00, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 2, 11, 05, 0, DateTimeKind.Utc),
+                    ReadyAt = new DateTime(2025, 10, 2, 11, 15, 0, DateTimeKind.Utc),
+                },
+                new Order
+                {
+                    OrderId = 4,
+                    OrderCode = "6243",
+                    CustomerName = "Riley Santos",
+                    CustomerPhone = "555-0933",
+                    CustomerEmail = "riley.santos@example.com",
+                    Status = OrderStatus.Completed,
+                    CreatedAt = new DateTime(2025, 10, 3, 11, 30, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 11, 10, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 3, 11, 15, 0, DateTimeKind.Utc),
+                    ReadyAt = new DateTime(2025, 10, 3, 11, 25, 0, DateTimeKind.Utc),
+                    CompletedAt = new DateTime(2025, 10, 3, 11, 30, 0, DateTimeKind.Utc),
+                },
+                new Order
+                {
+                    OrderId = 5,
+                    OrderCode = "2189",
+                    CustomerName = "Jordan Lee",
+                    CustomerPhone = "555-0977",
+                    CustomerEmail = "jordan.lee@example.com",
+                    Status = OrderStatus.Canceled,
+                    CreatedAt = new DateTime(2025, 10, 3, 12, 45, 0, DateTimeKind.Utc),
+                    ReceivedAt = new DateTime(2025, 10, 3, 12, 30, 0, DateTimeKind.Utc),
+                    PreparingAt = new DateTime(2025, 10, 3, 12, 35, 0, DateTimeKind.Utc),
+                    CanceledAt = new DateTime(2025, 10, 3, 12, 45, 0, DateTimeKind.Utc),
+                }
+            );
+
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem
+                {
+                    Id = 1,
+                    OrderId = 1,
+                    MenuItemId = 1,
+                    Quantity = 2,
+                    Customization = "No croutons"
+                },
+                new OrderItem
+                {
+                    Id = 2,
+                    OrderId = 1,
+                    MenuItemId = 6,
+                    Quantity = 1,
+                    Customization = "Extra strawberries"
+                },
+                new OrderItem
+                {
+                    Id = 3,
+                    OrderId = 2,
+                    MenuItemId = 4,
+                    Quantity = 1,
+                    Customization = "Add grilled chicken"
+                },
+                new OrderItem
+                {
+                    Id = 4,
+                    OrderId = 2,
+                    MenuItemId = 9,
+                    Quantity = 2,
+                    Customization = null
+                },
+                new OrderItem
+                {
+                    Id = 5,
+                    OrderId = 3,
+                    MenuItemId = 1,
+                    Quantity = 1,
+                    Customization = "Light dressing"
+                },
+                new OrderItem
+                {
+                    Id = 6,
+                    OrderId = 3,
+                    MenuItemId = 9,
+                    Quantity = 2,
+                    Customization = null
+                },
+
+                // OrderId = 4
+                new OrderItem
+                {
+                    Id = 7,
+                    OrderId = 4,
+                    MenuItemId = 4,
+                    Quantity = 1,
+                    Customization = "No onions"
+                },
+                new OrderItem
+                {
+                    Id = 8,
+                    OrderId = 4,
+                    MenuItemId = 6,
+                    Quantity = 1,
+                    Customization = "Extra strawberries"
+                },
+
+                // OrderId = 5
+                new OrderItem
+                {
+                    Id = 9,
+                    OrderId = 5,
+                    MenuItemId = 1,
+                    Quantity = 1,
+                    Customization = "No croutons"
+                },
+                new OrderItem
+                {
+                    Id = 10,
+                    OrderId = 5,
+                    MenuItemId = 4,
+                    Quantity = 2,
+                    Customization = "Add grilled chicken"
+                }
+
+            );
         }
     }
 }
