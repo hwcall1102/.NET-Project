@@ -1,0 +1,266 @@
+@page "/track-order-{Id:int}"
+@using Microsoft.EntityFrameworkCore
+@using TakeawayTitans.Data
+@using TakeawayTitans.Data.Models
+@rendermode InteractiveServer
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Order Status</PageTitle>
+
+<div class="track-page">
+    <div class="track-card">
+        @if (isLoading)
+        {
+            <div class="loading">
+                <Spinner />
+                <p class="mt-3">Fetching your order details...</p>
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="error-state">
+                <h2>We hit a snag</h2>
+                <p>@errorMessage</p>
+                <Button Type="ButtonType.Button" class="button btn-reset" @onclick="NavigateBack">Try Again</Button>
+            </div>
+        }
+        else if (Order is null)
+        {
+            <div class="error-state">
+                <h2>No order to show</h2>
+                <p>We could not locate an order that matches this tracking link.</p>
+                <Button Type="ButtonType.Button" class="button btn-reset" @onclick="NavigateBack">Track a different order</Button>
+            </div>
+        }
+        else
+        {
+            <div class="order-summary">
+                <div class="order-summary-header">
+                    <div>
+                        <p class="order-code">Order @Order.OrderCode</p>
+                        <span class="@GetStatusChipClass(Order.Status)">@FormatStatusText(Order.Status)</span>
+                    </div>
+                    <div class="order-meta">
+                        <div>
+                            <span class="meta-label">Placed</span>
+                            <p>@FormatTimestamp(Order.CreatedAt)</p>
+                        </div>
+                        <div>
+                            <span class="meta-label">Name</span>
+                            <p>@(string.IsNullOrWhiteSpace(Order.CustomerName) ? "—" : Order.CustomerName)</p>
+                        </div>
+                        <div>
+                            <span class="meta-label">Email</span>
+                            <p class="text-break">@(string.IsNullOrWhiteSpace(Order.CustomerEmail) ? "—" : Order.CustomerEmail)</p>
+                        </div>
+                        <div>
+                            <span class="meta-label">Phone</span>
+                            <p>@(string.IsNullOrWhiteSpace(Order.CustomerPhone) ? "—" : Order.CustomerPhone)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline">
+                    @foreach (var step in trackingSteps)
+                    {
+                        <div class="@step.StepClass">
+                            <div class="status-marker"></div>
+                            <div class="status-content">
+                                <div class="status-heading">
+                                    <span class="step-title">@step.Title</span>
+                                    <span class="@step.ChipClass">@step.ChipLabel</span>
+                                </div>
+                                <p class="step-time">@FormatTimestamp(step.Timestamp)</p>
+                                <p class="step-description">@step.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="order-items">
+                <div class="order-items-header">
+                    <p class="fs-3 fw-bold">Order items</p>
+                    <p class="fs-4">Total: @CalculateTotal(Order).ToString("C")</p>
+                </div>
+                @if (Order.OrderItems is { Count: > 0 })
+                {
+                    @foreach (var item in Order.OrderItems)
+                    {
+                        <div class="order-item">
+                            <div class="order-item-image">
+                                <img src="@item.MenuItem?.ImageUrl" alt="@(item.MenuItem?.Name ?? "Menu item image")" />
+                            </div>
+                            <div class="order-item-body">
+                                <p class="item-name">@item.MenuItem?.Name ?? "Menu item"</p>
+                                <p class="item-quantity">Quantity: @item.Quantity</p>
+                                <p class="item-price">@((item.MenuItem?.Price ?? 0m) * item.Quantity).ToString("C")</p>
+                                @if (!string.IsNullOrWhiteSpace(item.Customization))
+                                {
+                                    <p class="item-notes">Notes: @item.Customization</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="fs-5">We were unable to load the individual items for this order.</p>
+                }
+            </div>
+            <div class="actions">
+                <Button Type="ButtonType.Button" class="button btn-reset" @onclick="NavigateBack">Track another order</Button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Order? Order { get; set; }
+    private IReadOnlyList<TrackingStep> trackingSteps = Array.Empty<TrackingStep>();
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            await using var context = await DbFactory.CreateDbContextAsync();
+            Order = await context.Orders
+                .AsNoTracking()
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.MenuItem)
+                .FirstOrDefaultAsync(o => o.OrderId == Id);
+
+            if (Order is null)
+            {
+                errorMessage = "We could not find an order with that tracking code. Please confirm the link and try again.";
+                trackingSteps = Array.Empty<TrackingStep>();
+            }
+            else
+            {
+                trackingSteps = BuildTrackingSteps(Order).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Order = null;
+            trackingSteps = Array.Empty<TrackingStep>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void NavigateBack() => Navigation.NavigateTo("/track");
+
+    private static IEnumerable<TrackingStep> BuildTrackingSteps(Order order)
+    {
+        foreach (var step in StepDefinitions)
+        {
+            var timestamp = GetTimestamp(order, step.Status);
+            var isCurrent = order.Status == step.Status;
+            var isComplete = timestamp.HasValue && !isCurrent;
+            yield return new TrackingStep(step.Status, step.Title, step.Description, timestamp, isCurrent, isComplete);
+        }
+
+        if (order.CanceledAt.HasValue || order.Status == OrderStatus.Canceled)
+        {
+            var timestamp = order.CanceledAt;
+            var isCurrent = order.Status == OrderStatus.Canceled;
+            var isComplete = timestamp.HasValue && !isCurrent;
+            yield return new TrackingStep(
+                OrderStatus.Canceled,
+                "Order canceled",
+                "This order has been canceled.",
+                timestamp,
+                isCurrent,
+                isComplete);
+        }
+    }
+
+    private static string FormatTimestamp(DateTime? timestamp)
+    {
+        if (timestamp is not DateTime value)
+        {
+            return "Pending";
+        }
+
+        return value.ToLocalTime().ToString("MMM d, yyyy h:mm tt");
+    }
+
+    private static string FormatStatusText(OrderStatus status) =>
+        status switch
+        {
+            OrderStatus.Received => "Received",
+            OrderStatus.Preparing => "Preparing",
+            OrderStatus.Ready => "Ready for pickup",
+            OrderStatus.Completed => "Completed",
+            OrderStatus.Canceled => "Canceled",
+            _ => status.ToString()
+        };
+
+    private static string GetStatusChipClass(OrderStatus status) =>
+        status switch
+        {
+            OrderStatus.Completed => "status-chip completed",
+            OrderStatus.Ready => "status-chip ready",
+            OrderStatus.Preparing => "status-chip preparing",
+            OrderStatus.Canceled => "status-chip canceled",
+            _ => "status-chip received"
+        };
+
+    private static decimal CalculateTotal(Order order) =>
+        order.OrderItems.Sum(i => (i.MenuItem?.Price ?? 0m) * i.Quantity);
+
+    private static DateTime? GetTimestamp(Order order, OrderStatus status) =>
+        status switch
+        {
+            OrderStatus.Received => order.ReceivedAt ?? order.CreatedAt,
+            OrderStatus.Preparing => order.PreparingAt,
+            OrderStatus.Ready => order.ReadyAt,
+            OrderStatus.Completed => order.CompletedAt,
+            OrderStatus.Canceled => order.CanceledAt,
+            _ => null
+        };
+
+    private static readonly IReadOnlyList<(OrderStatus Status, string Title, string Description)> StepDefinitions =
+        new (OrderStatus, string, string)[]
+        {
+            (OrderStatus.Received, "Order received", "We have your order and are getting things ready."),
+            (OrderStatus.Preparing, "Preparing", "Our team is crafting your order with care."),
+            (OrderStatus.Ready, "Ready for pickup", "Your order is ready for pickup."),
+            (OrderStatus.Completed, "Picked up", "Enjoy your meal!"),
+        };
+
+    private sealed record TrackingStep(
+        OrderStatus Status,
+        string Title,
+        string Description,
+        DateTime? Timestamp,
+        bool IsCurrent,
+        bool IsComplete)
+    {
+        public string StepClass =>
+            $"status-step {(Status == OrderStatus.Canceled ? "canceled" : IsCurrent ? "current" : IsComplete ? "complete" : "pending")}";
+
+        public string ChipClass =>
+            $"step-chip {(Status == OrderStatus.Canceled ? "canceled" : IsCurrent ? "in-progress" : IsComplete ? "done" : "idle")}";
+
+        public string ChipLabel =>
+            Status == OrderStatus.Canceled
+                ? "Canceled"
+                : IsCurrent
+                    ? "In progress"
+                    : IsComplete
+                        ? "Completed"
+                        : "Pending";
+    }
+}
