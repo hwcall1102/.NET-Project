@@ -7,50 +7,53 @@
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit</h1>
+<div class="page">
+    <h1>Edit</h1>
 
-<h2>MenuItem</h2>
-<hr />
-@if (MenuItem is null)
-{
-            <p><em>Loading...</em></p>
-}
-else
-{
-            <div class="row">
-                <div class="col-md-4">
-                    <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
-                        <DataAnnotationsValidator />
-                        <ValidationSummary role="alert"/>
-                        <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
-                            <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" />
-                            <ValidationMessage For="() => MenuItem.Name" class="text-danger" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Price:</label>
-                            <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" />
-                            <ValidationMessage For="() => MenuItem.Price" class="text-danger" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description:</label>
-                            <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" />
-                            <ValidationMessage For="() => MenuItem.Description" class="text-danger" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="imageurl" class="form-label">ImageUrl:</label>
-                            <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" />
-                            <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </EditForm>
+    <h2>Menu Item</h2>
+    <hr />
+    @if (MenuItem is null)
+    {
+                <p><em>Loading...</em></p>
+    }
+    else
+    {
+                <div class="row">
+                    <div class="col-md-4">
+                        <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
+                            <DataAnnotationsValidator />
+                            <ValidationSummary role="alert"/>
+                            <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name:</label>
+                                <InputText id="name" @bind-Value="MenuItem.Name" class="form-control" />
+                                <ValidationMessage For="() => MenuItem.Name" class="text-danger" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price:</label>
+                                <InputNumber id="price" @bind-Value="MenuItem.Price" class="form-control" />
+                                <ValidationMessage For="() => MenuItem.Price" class="text-danger" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description:</label>
+                                <InputText id="description" @bind-Value="MenuItem.Description" class="form-control" />
+                                <ValidationMessage For="() => MenuItem.Description" class="text-danger" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="imageurl" class="form-label">ImageUrl:</label>
+                                <InputText id="imageurl" @bind-Value="MenuItem.ImageUrl" class="form-control" />
+                                <ValidationMessage For="() => MenuItem.ImageUrl" class="text-danger" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </EditForm>
+                    </div>
                 </div>
-            </div>
-}
+    }
 
-<div>
-    <a href="/menuitems">Back to List</a>
+    <div>
+        <a href="/admin/menu">Back to List</a>
+    </div>
+
 </div>
 
 @code {
@@ -94,7 +97,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/menuitems");
+        NavigationManager.NavigateTo("/admin/menu");
     }
 
     private bool MenuItemExists(int id)

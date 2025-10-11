@@ -7,39 +7,41 @@
 
 <PageTitle>Delete</PageTitle>
 
-<h1>Delete</h1>
+<div class="page">
+    <h1>Delete</h1>
 
-<p>Are you sure you want to delete this?</p>
-<div>
-    <h2>MenuItem</h2>
-    <hr />
-    @if (menuitem is null)
-    {
-            <p><em>Loading...</em></p>
-    }
-    else
-    {
-            <dl class="row">
-                <dt class="col-sm-2">Name</dt>
-                <dd class="col-sm-10">@menuitem.Name</dd>
+    <p>Are you sure you want to delete this?</p>
+    <div>
+        <h2>Menu Item:</h2>
+        <hr />
+        @if (menuitem is null)
+        {
+                <p><em>Loading...</em></p>
+        }
+        else
+        {
+                <dl class="row">
+                    <dt class="col-sm-2">Name</dt>
+                    <dd class="col-sm-10">@menuitem.Name</dd>
+                </dl>
+                <dl class="row">
+                <dt class="col-sm-2">Price</dt>
+                <dd class="col-sm-10">@menuitem.Price</dd>
             </dl>
-            <dl class="row">
-            <dt class="col-sm-2">Price</dt>
-            <dd class="col-sm-10">@menuitem.Price</dd>
-        </dl>
-            <dl class="row">
-            <dt class="col-sm-2">Description</dt>
-            <dd class="col-sm-10">@menuitem.Description</dd>
-        </dl>
-            <dl class="row">
-            <dt class="col-sm-2">ImageUrl</dt>
-            <dd class="col-sm-10">@menuitem.ImageUrl</dd>
-        </dl>
-            <EditForm method="post" Model="menuitem" OnValidSubmit="DeleteMenuItem" FormName="delete" Enhance>
-                <button type="submit" class="btn btn-danger" disabled="@(menuitem is null)">Delete</button> |
-                <a href="/menuitems">Back to List</a>
-            </EditForm>
-    }
+                <dl class="row">
+                <dt class="col-sm-2">Description</dt>
+                <dd class="col-sm-10">@menuitem.Description</dd>
+            </dl>
+                <dl class="row">
+                <dt class="col-sm-2">ImageUrl</dt>
+                <dd class="col-sm-10">@menuitem.ImageUrl</dd>
+            </dl>
+                <EditForm method="post" Model="menuitem" OnValidSubmit="DeleteMenuItem" FormName="delete" Enhance>
+                    <button type="submit" class="btn btn-danger" disabled="@(menuitem is null)">Delete</button> |
+                    <a href="/admin/menu">Back to List</a>
+                </EditForm>
+        }
+    </div>
 </div>
 
 @code {
@@ -64,6 +66,6 @@
         using var context = DbFactory.CreateDbContext();
         context.MenuItems.Remove(menuitem!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/menuitems");
+        NavigationManager.NavigateTo("/admin/menu");
     }
 }

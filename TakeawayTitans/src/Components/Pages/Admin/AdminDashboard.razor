@@ -1,8 +1,10 @@
 @page "/admin-dashboard"
+
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 
 <PageTitle>Admin Dashboard</PageTitle>
+
 <div class="page">
     <div>
         <AuthorizeView>
@@ -51,7 +53,7 @@
 
     void GoToMenu()
     {
-        Navigation.NavigateTo("/admin-menu");
+        Navigation.NavigateTo("/admin/menu");
     }
 
     void GoToProfile()

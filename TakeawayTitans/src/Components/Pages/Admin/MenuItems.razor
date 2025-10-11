@@ -1,0 +1,352 @@
+@page "/admin/menu"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using TakeawayTitans.Data
+@using TakeawayTitans.Data.Models
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Http
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+@inject NavigationManager Nav
+@inject IHttpContextAccessor Http
+@rendermode InteractiveServer
+@* @attribute [Microsoft.AspNetCore.Authorization.Authorize] *@
+
+<PageTitle>Menu Items</PageTitle>
+
+<div class="page">
+    <h2 class="mb-3">Menu Items</h2>
+
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button class="btn btn-primary" @onclick="() => _showCreate = true">Add New</button>
+        @* <button class="btn btn-outline-secondary" @onclick="ReloadAsync">Reload</button> *@
+
+        <div class="ms-auto">
+            <input type="search"
+                   class="form-control"
+                   style="min-width:260px"
+                   placeholder="Filter by name…"
+                   @bind="filterName" @bind:event="oninput" />
+        </div>
+    </div>
+
+    @if (_items is null)
+    {
+        <p>Loading…</p>
+    }
+    else
+    {
+        <QuickGrid TGridItem="MenuItem" Class="table table-striped"
+                   Items="FilteredItems"
+                   Pagination="state">
+            <PropertyColumn Title="Name"
+                            Property="m => m.Name"
+                            Sortable="true" />
+            <TemplateColumn Title="Price" Sortable="true">
+                @if (context is MenuItem mi1)
+                {
+                    <span class="text-end d-inline-block" style="min-width:90px">
+                        @mi1.Price.ToString("0.00")
+                    </span>
+                }
+            </TemplateColumn>
+            <PropertyColumn Title="Description"
+                            Property="m => m.Description" />
+
+            <TemplateColumn Title="Image">
+                @if (context is MenuItem mi2 && !string.IsNullOrWhiteSpace(mi2.ImageUrl))
+                {
+                    <img src="@mi2.ImageUrl"
+                         alt="@mi2.Name"
+                         style="height:40px;object-fit:cover;border-radius:6px;" />
+                }
+            </TemplateColumn>
+
+            <TemplateColumn Title="">
+                @if (context is MenuItem mi3)
+                {
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-outline-secondary"
+                                @onclick='() => Nav.NavigateTo($"menuitems/edit?id={mi3.Id}")'>
+                            Edit
+                        </button>
+                        <button class="btn btn-danger"
+                                @onclick='() => Nav.NavigateTo($"menuitems/delete?id={mi3.Id}")'>
+                            Delete
+                        </button>
+                    </div>
+
+                }
+            </TemplateColumn>
+        </QuickGrid>
+
+        <Paginator State="state" />
+    }
+
+    @if (_showCreate)
+    {
+        <div class="card p-3 mt-3">
+            <h4>Create Menu Item</h4>
+            <EditForm Model="_newItem" OnValidSubmit="CreateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-2">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="_newItem.Name" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Price</label>
+                    <InputNumber class="form-control" @bind-Value="_newItem.Price" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Description</label>
+                    <InputTextArea class="form-control" @bind-Value="_newItem.Description" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image URL</label>
+                    <InputText class="form-control" @bind-Value="_newItem.ImageUrl" />
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" type="submit">Save</button>
+                    <button class="btn btn-secondary" type="button" @onclick="CancelCreate">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    private List<MenuItem>? _items;
+    private bool _showCreate;
+    private MenuItem _newItem = new();
+    private bool _isAuthed;
+
+    // Paging + filter
+    private readonly PaginationState state = new() { ItemsPerPage = 6 };
+    private string filterName = string.Empty;
+
+    // Computed filtered list for QuickGrid
+    private IQueryable<MenuItem> FilteredItems =>
+        _items is null ? new List<MenuItem>().AsQueryable() :
+        string.IsNullOrWhiteSpace(filterName)
+            ? _items.AsQueryable()
+            : _items.Where(i => i.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase)).AsQueryable();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Auth token cookie guard compatible with your PostLogin
+        var token = Http.HttpContext?.Request.Cookies[BlazorConstants.AuthCookieName];
+        _isAuthed = !string.IsNullOrWhiteSpace(token);
+
+        if (!_isAuthed)
+        {
+            var returnUrl = Uri.EscapeDataString("/admin/menu");
+            Nav.NavigateTo($"/admin-login?returnUrl={returnUrl}", forceLoad: true);
+            return;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        _items = await db.MenuItems.AsNoTracking()
+                                   .OrderBy(m => m.Name)
+                                   .ToListAsync();
+    }
+
+    @* private async Task ReloadAsync()
+    {
+        await LoadAsync();
+        StateHasChanged();
+    } *@
+
+    private async Task CreateAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        db.MenuItems.Add(_newItem);
+        await db.SaveChangesAsync();
+
+        _newItem = new();
+        _showCreate = false; // hides form after saving
+        await LoadAsync();
+    }
+
+    private void CancelCreate()
+    {
+        _newItem = new();
+        _showCreate = false;
+    }
+}
+
+
+@* @page "/admin/menu"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using TakeawayTitans.Data
+@using TakeawayTitans.Data.Models
+@inject IDbContextFactory<TakeawayTitansContext> DbFactory
+@inject NavigationManager Nav
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Http *@
+@* @attribute [Microsoft.AspNetCore.Authorization.Authorize] *@
+
+@* <PageTitle>Menu Items</PageTitle>
+
+<div class="page">
+    <h2 class="mb-3">Menu Items</h2>
+
+    @if (_items is null)
+    {
+        <p>Loading…</p>
+    }
+    else
+    {
+        <div class="mb-3 d-flex gap-2">
+            <button class="btn btn-primary" @onclick="() => _showCreate = true">Add New</button>
+            <button class="btn btn-outline-secondary" @onclick="ReloadAsync">Reload</button>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="text-end">Price</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th class="text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var m in _items)
+            {
+                <tr>
+                    <td>@m.Name</td>
+                    <td class="text-end">@m.Price</td>
+                    <td>@m.Description</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(m.ImageUrl))
+                        {
+                            <img src="@m.ImageUrl" alt="@m.Name" style="height:40px;object-fit:cover;border-radius:6px;" />
+                        }
+                    </td>
+                    <td class="text-end">
+                    <button class="btn btn-sm btn-outline-secondary"
+                            @onclick='() => Nav.NavigateTo($"/admin/menu/edit/{m.Id}")'>Edit</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @if (_showCreate)
+    {
+        <div class="card p-3 mt-3">
+            <h4>Create Menu Item</h4>
+            <EditForm Model="_newItem" OnValidSubmit="CreateAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-2">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="_newItem.Name" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Price</label>
+                    <InputNumber class="form-control" @bind-Value="_newItem.Price" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Description</label>
+                    <InputTextArea class="form-control" @bind-Value="_newItem.Description" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image URL</label>
+                    <InputText class="form-control" @bind-Value="_newItem.ImageUrl" />
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" type="submit">Save</button>
+                    <button class="btn btn-secondary" type="button" @onclick="CancelCreate">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    private List<MenuItem>? _items;
+    private bool _showCreate;
+    private MenuItem _newItem = new();
+    private bool _isAuthed; *@
+
+    @* protected override async Task OnInitializedAsync() => await LoadAsync(); *@
+    @* protected override async Task OnInitializedAsync()
+    {
+        // Check for the token cookie your PostLogin writes
+        var token = Http.HttpContext?.Request.Cookies[BlazorConstants.AuthCookieName];
+        _isAuthed = !string.IsNullOrWhiteSpace(token);
+
+        if (!_isAuthed)
+        {
+            // Bounce them to login with a returnUrl back to this page
+            var returnUrl = Uri.EscapeDataString("/admin/menu");
+            Nav.NavigateTo($"/admin-login?returnUrl={returnUrl}", forceLoad: true);
+            return;
+        }
+
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        _items = await db.MenuItems.AsNoTracking().OrderBy(m => m.Name).ToListAsync();
+    }
+
+    private async Task ReloadAsync()
+    {
+        await LoadAsync();
+        StateHasChanged();
+    }
+
+    //adding a new item
+    private async Task CreateAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        db.MenuItems.Add(_newItem);
+        await db.SaveChangesAsync();
+
+        _newItem = new();
+        _showCreate = true;
+        await LoadAsync();
+    }
+
+    private void CancelCreate()
+    {
+        _newItem = new();
+        _showCreate = false;
+    }
+}
+<Paginator State="state" />
+
+@code {
+    PaginationState state = new PaginationState { ItemsPerPage = 6 };
+    string filterName = string.Empty;
+
+    IQueryable<MenuItem> ApplyFilter(IQueryable<MenuItem> items)
+    {
+        if (!string.IsNullOrWhiteSpace(filterName))
+        {
+            items = items.Where(item => item.Name.Contains(filterName));
+        }
+        return items;
+    }
+} *@

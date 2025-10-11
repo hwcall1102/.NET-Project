@@ -42,7 +42,7 @@
 </div>
 
 <div>
-    <a href="/menuitems">Back to List</a>
+    <a href="/admin/menu">Back to List</a>
 </div>
 
 @code {
@@ -55,6 +55,6 @@
         using var context = DbFactory.CreateDbContext();
         context.MenuItems.Add(MenuItem);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/menuitems");
+        NavigationManager.NavigateTo("/admin/menu");
     }
 }
