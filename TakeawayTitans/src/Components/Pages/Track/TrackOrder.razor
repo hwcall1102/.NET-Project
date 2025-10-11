@@ -91,9 +91,9 @@
                                 <img src="@item.MenuItem?.ImageUrl" alt="@(item.MenuItem?.Name ?? "Menu item image")" />
                             </div>
                             <div class="order-item-body">
-                                <p class="item-name">@item.MenuItem?.Name</p>
+                                <p class="item-name">@item.MenuItem?.Name ?? "Menu item"</p>
                                 <p class="item-quantity">Quantity: @item.Quantity</p>
-                                <p class="item-price">@(((item.MenuItem?.Price ?? 0m) * item.Quantity).ToString("C"))</p>
+                                <p class="item-price">@((item.MenuItem?.Price ?? 0m) * item.Quantity).ToString("C")</p>
                                 @if (!string.IsNullOrWhiteSpace(item.Customization))
                                 {
                                     <p class="item-notes">Notes: @item.Customization</p>
